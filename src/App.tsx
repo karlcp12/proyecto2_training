@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Button from "./components/atoms/Button";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div style={{ padding: "40px" }}>
+      <h1>Probando mi Button Átomo</h1>
+
+      <Button>Primary</Button>
+      <br /><br />
+
+      <Button variant="secondary">Secondary</Button>
+      <br /><br />
+
+      <Button variant="outline">Outline</Button>
+      <br /><br />
+
+      <Button size="lg">Large Button</Button>
+      <br /><br />
+
+      <Button loading>Guardando</Button>
+      <br /><br />
+
+      <Button disabled>Deshabilitado</Button>
+    </div>
+  );
 }
 
-export default App
+export default App;

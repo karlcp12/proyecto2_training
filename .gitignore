@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+update_git.bat
 
 # Editor directories and files
 .vscode/*
