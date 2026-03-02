@@ -1,0 +1,12 @@
+.logo-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-header__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
