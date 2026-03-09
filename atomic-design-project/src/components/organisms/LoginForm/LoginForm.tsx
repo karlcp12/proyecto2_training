@@ -1,7 +1,8 @@
 import { Logo } from "../../atoms/Logo/Logo";
+import { Label } from "../../atoms/Label/Label";
+import { Input } from "../../atoms/Input/Input";
 import { Button } from "../../atoms/Button/Button";
-import { FormField } from "../../molecules/FormField/FormField";
-import { ForgotPassword } from "../../molecules/ForgotPassword/ForgotPassword";
+import { Link } from "../../atoms/Link/Link";
 import "./LoginForm.css";
 
 export const LoginForm = () => {
@@ -9,21 +10,22 @@ export const LoginForm = () => {
     <div className="login-card">
 
       <div className="logo-container">
-        <Logo width={180} />
+        <Logo width={170} />
       </div>
 
-      <FormField
-        label="Usuario"
-        placeholder="Ingrese su usuario"
-      />
+      <div className="field">
+        <Label text="Usuario" />
+        <Input placeholder="Ingrese su usuario" />
+      </div>
 
-      <FormField
-        label="Contraseña"
-        type="password"
-        placeholder="Ingrese su contraseña"
-      />
+      <div className="field">
+        <Label text="Contraseña" />
+        <Input type="password" placeholder="Ingrese su contraseña" />
+      </div>
 
-      <ForgotPassword />
+      <div className="forgot">
+  <Link text="¿Olvidó su contraseña?" href="/recover-password" />
+</div>
 
       <Button text="Ingresar" />
 

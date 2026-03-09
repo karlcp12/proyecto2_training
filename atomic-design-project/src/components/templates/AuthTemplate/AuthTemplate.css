@@ -10,3 +10,15 @@
   background-position: center;
 
 }
+.auth-container{
+  height: 98vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-image: url("/sena.jpg");
+  background-size: cover;
+  background-position: center;
+
+}
