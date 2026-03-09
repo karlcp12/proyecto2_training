@@ -1,7 +1,7 @@
-import { AtomPreview } from "./preview/AtomsPreview";
+import { LoginPage } from "../src/components/pages/LoginPage/LoginPage"
 
 function App() {
-  return <AtomPreview />;
+  return <LoginPage />;
 }
 
 export default App;
