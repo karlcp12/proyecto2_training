@@ -1,18 +1,16 @@
-import React from "react";
 import "./Input.css";
-import classNames from "classnames";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  className?: string;
+interface InputProps {
+  type?: string;
+  placeholder?: string;
 }
 
-const Input: React.FC<InputProps> = ({ className, ...props }) => {
+export const Input = ({ type = "text", placeholder }: InputProps) => {
   return (
-    <input 
-      className={classNames("input", className)} 
-      {...props} 
+    <input
+      className="input"
+      type={type}
+      placeholder={placeholder}
     />
   );
 };
-
-export default Input;

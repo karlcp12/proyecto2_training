@@ -1,21 +1,16 @@
-import React from "react";
 import "./Logo.css";
 
 interface LogoProps {
-  size?: "sm" | "md" | "lg";
-  className?: string;
+  width?: number;
 }
 
-const Logo: React.FC<LogoProps> = ({ size = "md", className }) => {
+export const Logo = ({ width = 120 }: LogoProps) => {
   return (
-    <div className={`logo logo--${size} ${className || ""}`}>
-      <img
-        src=""
-        alt="Logimat" 
-        className="logo__image"
-      />
-    </div>
+    <img
+      className="logo"
+      src="/logimat.jpeg"
+      alt="Logimat Logo"
+      style={{ width: `${width}px` }}
+    />
   );
 };
-
-export default Logo;

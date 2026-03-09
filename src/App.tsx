@@ -1,11 +1,18 @@
-import LoginForm from "./components/organisms/LoginForm/LoginForm";
-import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import { LoginPage } from "./components/pages/LoginPage/LoginPage";
+import { RecoverPasswordPage } from "./components/pages/RecoverPasswordPage/RecoverPasswordPage"
 
 function App() {
   return (
-    <div className="app">
-      <LoginForm />
-    </div>
+    <BrowserRouter>
+
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/recover-password" element={<RecoverPasswordPage />} />
+      </Routes>
+
+    </BrowserRouter>
   );
 }
 
