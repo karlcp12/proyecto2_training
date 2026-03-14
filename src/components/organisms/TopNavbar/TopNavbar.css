@@ -1,0 +1,69 @@
+.top-navbar {
+  height: 80px;
+  background-color: #cffec9; /* Verde muy claro del header según la imagen */
+  display: flex;
+  justify-content: flex-end; /* Alineamos a la derecha */
+  align-items: center;
+  padding: 0 2rem;
+  position: relative;
+}
+
+/* La barra de búsqueda parece flotar cerca del centro/derecha */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #f0f4f8; /* Color de fondo del input parecido a la imagen */
+  border: 1px solid #738f9f;
+  border-radius: 6px;
+  padding: 0.4rem 1rem;
+  width: 350px;
+  margin-right: auto;
+  margin-left: 2rem;
+}
+
+.search-icon {
+  color: #738f9f;
+  margin-right: 0.5rem;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.search-input::placeholder {
+  color: #b0c0d0;
+}
+
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 2rem;
+}
+
+.user-avatar {
+  background-color: #8fcd94; /* Verde más oscuro para el círculo */
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.2rem;
+}
+
+.avatar-icon {
+  color: #1a4f1a;
+  font-size: 1.8rem;
+}
+
+.user-role {
+  font-weight: 700;
+  color: #1a4f1a;
+  font-size: 0.9rem;
+}

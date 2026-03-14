@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Logo } from "../../atoms/Logo/Logo";
 import { Label } from "../../atoms/Label/Label";
 import { Input } from "../../atoms/Input/Input";
@@ -6,6 +7,13 @@ import { Link } from "../../atoms/Link/Link";
 import "./LoginForm.css";
 
 export const LoginForm = () => {
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    // Simular que el login es exitoso y navegar al app
+    navigate("/app");
+  };
+
   return (
     <div className="login-card">
 
@@ -24,10 +32,10 @@ export const LoginForm = () => {
       </div>
 
       <div className="forgot">
-  <Link text="¿Olvidó su contraseña?" href="/recover-password" />
-</div>
+        <Link text="¿Olvidó su contraseña?" href="/recover-password" />
+      </div>
 
-      <Button text="Ingresar" />
+      <Button text="Ingresar" onClick={handleLogin} />
 
     </div>
   );
