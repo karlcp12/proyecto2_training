@@ -1,0 +1,136 @@
+.sidebar {
+  width: 250px;
+  background-color: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-logo {
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid transparent; /* por si acaso */
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Scrollbar styling nav */
+.sidebar-nav::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1.5rem;
+  color: #7a8c9e;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.nav-icon {
+  margin-right: 1rem;
+  font-size: 1.1rem;
+}
+
+/* Flat links hover & active state */
+.flat-link:hover, .flat-link.active {
+  color: #555;
+}
+
+/* Gestión Button Special Styling */
+.gestion-btn {
+  background-color: #0d8a35; /* Verde fuerte de LOGIMAT */
+  color: white;
+  border-radius: 4px;
+  margin: 0 1rem;
+  width: calc(100% - 2rem);
+  padding: 0.75rem 1rem;
+  justify-content: flex-start;
+}
+.gestion-btn:hover {
+  background-color: #0a6928;
+}
+
+/* Submenu */
+.submenu {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+}
+
+.submenu.open {
+  max-height: 200px;
+  margin-top: 0.5rem;
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem 0.5rem 3.5rem;
+  color: #8fa0af;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.submenu-item:hover {
+  color: #555;
+  background-color: #f0f0f0;
+}
+
+.submenu-item.active {
+  background-color: #e2e8f0;
+  color: #8fa0af;
+  border-radius: 0 4px 4px 0;
+}
+
+.submenu-icon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  color: inherit;
+}
+
+.sidebar-footer {
+  padding: 1rem;
+}
+
+.logout-btn {
+  width: 100%;
+  background-color: #f05252;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #d13d3d;
+}
