@@ -18,6 +18,5 @@
   padding: 2rem;
   overflow-y: auto;
   display: flex;
-  justify-content: center;
-  align-items: center; /* Para centrar el logo grandote en el default */
+  flex-direction: column;
 }

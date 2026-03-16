@@ -54,23 +54,37 @@
   font-size: 1.1rem;
 }
 
-/* Flat links hover & active state */
-.flat-link:hover, .flat-link.active {
-  color: #555;
-}
-
-/* Gestión Button Special Styling */
-.gestion-btn {
-  background-color: #0d8a35; /* Verde fuerte de LOGIMAT */
-  color: white;
+.flat-link {
   border-radius: 4px;
   margin: 0 1rem;
   width: calc(100% - 2rem);
   padding: 0.75rem 1rem;
   justify-content: flex-start;
+  box-sizing: border-box; /* Asegura que no crezca el ancho más de lo deseado */
 }
-.gestion-btn:hover {
-  background-color: #0a6928;
+
+.flat-link:hover, .flat-link.active {
+  background-color: #0d8a35; /* Verde fuerte de LOGIMAT / SENA */
+  color: white;
+  transform: scale(1.02); /* Efecto de sobresalir */
+  box-shadow: 0 4px 6px rgba(13, 138, 53, 0.2); /* Sombra para resaltar */
+}
+
+/* Gestión Button Special Styling */
+.gestion-btn {
+  border-radius: 4px;
+  margin: 0 1rem;
+  width: calc(100% - 2rem);
+  padding: 0.75rem 1rem;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.gestion-btn:hover, .gestion-btn.active {
+  background-color: #0d8a35; /* Verde fuerte de LOGIMAT / SENA */
+  color: white;
+  transform: scale(1.02); /* Efecto de sobresalir */
+  box-shadow: 0 4px 6px rgba(13, 138, 53, 0.2); /* Sombra para resaltar */
 }
 
 /* Submenu */
@@ -99,16 +113,16 @@
 }
 
 .submenu-item:hover {
-  color: #555;
-  background-color: #f0f0f0;
+  color: white;
+  background-color: #fca830; /* Naranja SENA claro para hover */
+  transform: translateX(5px); /* Efecto de sobresalir ligeramente a la derecha */
 }
 
 .submenu-item.active {
-  background-color: #e2e8f0;
-  color: #8fa0af;
+  background-color: #ff6a00; /* Naranja SENA principal */
+  color: white;
   border-radius: 0 4px 4px 0;
 }
-
 .submenu-icon {
   margin-right: 0.5rem;
   font-size: 1rem;

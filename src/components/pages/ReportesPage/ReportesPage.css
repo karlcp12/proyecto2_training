@@ -1,0 +1,313 @@
+.reportes-page-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ─── HEADER ─────────────────────────────── */
+.reportes-header-inicio {
+  margin-bottom: 32px;
+}
+
+.reportes-header-inicio h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.reportes-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.reportes-header-actions h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.reportes-titulo-con-back {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-back {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.btn-back:hover {
+  background: #ddd;
+}
+
+/* ─── ACCIONES DERECHA ───────────────────── */
+.reportes-actions-right {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/* ─── SEARCH BAR ─────────────────────────── */
+.reportes-search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #f9f9fc;
+  border-radius: 20px;
+  padding: 8px 16px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.reportes-search-icon {
+  font-style: normal;
+  color: #a0a0a0;
+  margin-right: 8px;
+  font-size: 0.9rem;
+}
+
+.reportes-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+}
+
+.reportes-search-input::placeholder {
+  color: #a0a0a0;
+}
+
+/* ─── BOTÓN IMPRIMIR ─────────────────────── */
+.btn-print-report {
+  background-color: #2e9f1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-print-report:hover {
+  background-color: #248015;
+}
+
+/* ─── TABLA REPORTES ─────────────────────── */
+.reportes-table-wrapper {
+  overflow-x: auto;
+  flex: 1;
+  background: white;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+}
+
+.reportes-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.reportes-table th {
+  color: #8c8c8c;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 16px;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #f9f9fc;
+  text-transform: capitalize;
+}
+
+.reportes-table td {
+  padding: 16px;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.reportes-table tbody tr:hover {
+  background-color: #f9f9fc;
+}
+
+.bold-text {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* ─── ICONOS ACCIÓN ──────────────────────── */
+.icon-button {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.icon-button:hover {
+  transform: scale(1.2);
+  opacity: 0.8;
+}
+
+.icon-check {
+  color: #38b000;
+}
+
+.icon-cross {
+  color: #ee6055;
+}
+
+.icon-info {
+  color: #48cae4;
+}
+
+/* ─── CARDS INICIO ───────────────────────── */
+.reportes-inicio-cards {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  flex-wrap: wrap;
+  padding: 32px 0;
+}
+
+.reporte-card-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #f5faf5;
+  border: 2px solid #c8e6c9;
+  border-radius: 16px;
+  width: 180px;
+  height: 180px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 20px;
+}
+
+.reporte-card-btn:hover {
+  background: #e8f5e9;
+  border-color: #4caf50;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(76, 175, 80, 0.2);
+}
+
+.reporte-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reporte-card-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2e7d32;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ─── VISTA DETALLE ──────────────────────── */
+.detalle-seccion {
+  margin-bottom: 28px;
+}
+
+.detalle-seccion-titulo {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e8f5e9;
+}
+
+.detalle-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: #f9f9fc;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eaeaea;
+}
+
+.detalle-campo {
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8c8c8c;
+  width: 40%;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #f9f9fc;
+}
+
+.detalle-valor {
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  border-bottom: 1px solid #eaeaea;
+  background: white;
+}
+
+.badge-estado-reporte {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge-estado-reporte.en-uso {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.badge-estado-reporte.disponible {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}

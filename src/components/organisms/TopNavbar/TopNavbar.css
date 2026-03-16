@@ -1,6 +1,6 @@
 .top-navbar {
   height: 80px;
-  background-color: #cffec9; /* Verde muy claro del header según la imagen */
+  background-color: #39a900; /* Verde SENA solicitado */
   display: flex;
   justify-content: flex-end; /* Alineamos a la derecha */
   align-items: center;
@@ -47,7 +47,7 @@
 }
 
 .user-avatar {
-  background-color: #8fcd94; /* Verde más oscuro para el círculo */
+  background-color: #2b7d00; /* Un verde un poco más oscuro para contraste, o el mismo si prefiere */
   border-radius: 50%;
   width: 45px;
   height: 45px;

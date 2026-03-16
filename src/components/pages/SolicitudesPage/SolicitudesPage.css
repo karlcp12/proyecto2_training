@@ -1,0 +1,22 @@
+.sol-section-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sol-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.sol-badge.pendiente  { background: #fff9c4; color: #f57f17; }
+.sol-badge.aprobada   { background: #e8f5e9; color: #2e7d32; }
+.sol-badge.rechazada  { background: #fdecea; color: #c62828; }
