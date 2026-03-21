@@ -3,7 +3,8 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background-color: #f9fff8; /* Fondo suave */
+  background-color: #f9fff8;
+  /* Fondo suave */
 }
 
 .main-content-wrapper {
@@ -15,8 +16,19 @@
 
 .main-content {
   flex: 1;
-  padding: 2rem;
+  padding: 1.5rem 2rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+}
+
+
+.main-content>* {
+  background-color: #ffffff !important;
+  border: var(--border-premium);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  min-height: calc(100vh - 120px);
+  margin-bottom: 2rem;
 }

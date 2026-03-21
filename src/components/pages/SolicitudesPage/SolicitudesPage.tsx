@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../../molecules/Modal/Modal';
+import { FaSearch, FaPlus } from 'react-icons/fa';
 import '../MaterialesPage/MaterialesPage.css';
 import './SolicitudesPage.css';
 
@@ -38,10 +39,9 @@ const SolicitudForm: React.FC<{
   };
 
   return (
-    <form className="crud-form" onSubmit={e => { e.preventDefault(); onSubmit(form); }}>
+    <form className="crud-form redesign" onSubmit={e => { e.preventDefault(); onSubmit(form); }}>
       <h3 className="crud-form-title">{isEditing ? 'EDITAR SOLICITUD' : 'DETALLES DE SOLICITUD'}</h3>
 
-      <div className="sol-section-label">Materiales Elegidos</div>
       <div className="crud-form-grid">
         <div className="crud-form-group">
           <label>Material</label>
@@ -56,10 +56,6 @@ const SolicitudForm: React.FC<{
           <label>Cantidad</label>
           <input type="number" name="cantidad" value={form.cantidad} onChange={handleChange} min="1" required />
         </div>
-      </div>
-
-      <div className="sol-section-label">Elija el ID de ficha</div>
-      <div className="crud-form-grid">
         <div className="crud-form-group">
           <label>Ficha</label>
           <select name="id_ficha" value={form.id_ficha} onChange={handleChange} required>
@@ -69,30 +65,28 @@ const SolicitudForm: React.FC<{
             ))}
           </select>
         </div>
+
         <div className="crud-form-group">
           <label>ID Aprendiz</label>
           <input name="id_aprendiz" value={form.id_aprendiz} onChange={handleChange} placeholder="ID del aprendiz" required />
         </div>
-      </div>
 
-      {isEditing && (
-        <>
-          <div className="sol-section-label">Estado</div>
-          <div className="crud-form-grid">
-            <div className="crud-form-group">
-              <label>Estado de Solicitud</label>
-              <select name="estado" value={form.estado} onChange={handleChange}>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Aprobada">Aprobada</option>
-                <option value="Rechazada">Rechazada</option>
-              </select>
-            </div>
+        {isEditing ? (
+          <div className="crud-form-group">
+            <label>Estado de Solicitud</label>
+            <select name="estado" value={form.estado} onChange={handleChange}>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Aprobada">Aprobada</option>
+              <option value="Rechazada">Rechazada</option>
+            </select>
           </div>
-        </>
-      )}
+        ) : (
+          <button type="submit" className="btn-pill btn-pill-submit" style={{ gridColumn: 'span 2' }}>Aceptar</button>
+        )}
 
-      <div className="crud-form-actions">
-        <button type="submit" className="btn-submit-crud">Aceptar</button>
+        {isEditing && (
+          <button type="submit" className="btn-pill btn-pill-submit" style={{ gridColumn: 'span 1' }}>Aceptar</button>
+        )}
       </div>
     </form>
   );
@@ -156,17 +150,19 @@ export const SolicitudesPage: React.FC = () => {
   const fmtFecha = (d?: string) => d ? new Date(d).toLocaleDateString('es-CO') : '—';
 
   return (
-    <div className="crud-page-container">
+    <div className="crud-page-container redesign">
       <div className="crud-header-actions">
         <h2>SOLICITUDES</h2>
-        <div className="crud-actions-right">
+        <div className="crud-header-right">
           <div className="crud-search-bar">
-            <span>🔍</span>
-            <input type="text" placeholder="Search" className="crud-search-input"
-              value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+            <span><FaSearch /></span>
+            <input
+              type="text" placeholder="Buscar solicitud..." className="crud-search-input"
+              value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+            />
           </div>
-          <button className="btn-add-crud" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
-            Nueva Solicitud
+          <button className="btn-pill btn-pill-add" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
+            <FaPlus /> añadir solicitud
           </button>
         </div>
       </div>
@@ -174,7 +170,7 @@ export const SolicitudesPage: React.FC = () => {
       <div className="sol-section-label" style={{ marginBottom: '12px' }}>Solicitudes de los Users</div>
 
       <div className="crud-table-wrapper">
-        <table className="crud-table">
+        <table className="crud-table redesign">
           <thead>
             <tr>
               <th>#</th>
@@ -200,8 +196,10 @@ export const SolicitudesPage: React.FC = () => {
                   <span className={estadoBadgeClass(s.estado)}>{s.estado}</span>
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <button className="btn-action-edit" onClick={() => { setEditing(s); setIsModalOpen(true); }}>Editar</button>
-                  <button className="btn-action-delete" onClick={() => handleDelete(s)}>Eliminar</button>
+                  <div className="action-pill-group">
+                    <button className="btn-pill btn-pill-edit" onClick={() => { setEditing(s); setIsModalOpen(true); }}>Editar</button>
+                    <button className="btn-pill btn-pill-delete" onClick={() => handleDelete(s)}>Eliminar</button>
+                  </div>
                 </td>
               </tr>
             ))}

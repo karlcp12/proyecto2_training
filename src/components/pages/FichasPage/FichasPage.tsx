@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../../molecules/Modal/Modal';
-import '../MaterialesPage/MaterialesPage.css';
+import { FaSearch, FaPlus } from 'react-icons/fa';
+import './FichasPage.css';
 
 const API_URL = 'http://localhost:3000/fichas';
 
@@ -37,7 +38,7 @@ const FichaForm: React.FC<{
   };
 
   return (
-    <form className="crud-form" onSubmit={e => { e.preventDefault(); onSubmit(form); }}>
+    <form className="crud-form redesign" onSubmit={e => { e.preventDefault(); onSubmit(form); }}>
       <h3 className="crud-form-title">{isEditing ? 'EDITAR FICHA' : 'AÑADIR FICHA'}</h3>
       <div className="crud-form-grid">
         <div className="crud-form-group">
@@ -47,6 +48,18 @@ const FichaForm: React.FC<{
         <div className="crud-form-group">
           <label>Instructor Líder</label>
           <input name="instructor_lider" value={form.instructor_lider} onChange={handleChange} placeholder="Nombre del instructor" required />
+        </div>
+        <div className="crud-form-group">
+          <label>Programa (Sigla)</label>
+          <select name="id_programa" value={form.id_programa} onChange={handleChange} required>
+            <option value="">Seleccione...</option>
+            <option value="ADSO">ADSO</option>
+            <option value="TPS">TPS</option>
+            <option value="TGBS">TGBS</option>
+            <option value="TMI">TMI</option>
+            <option value="TPL">TPL</option>
+            <option value="GGE">GGE</option>
+          </select>
         </div>
         <div className="crud-form-group">
           <label>Ambiente</label>
@@ -78,9 +91,7 @@ const FichaForm: React.FC<{
             </select>
           </div>
         )}
-      </div>
-      <div className="crud-form-actions">
-        <button type="submit" className="btn-submit-crud">Aceptar</button>
+        <button type="submit" className="btn-pill btn-pill-submit" style={{ gridColumn: 'span 2' }}>Aceptar</button>
       </div>
     </form>
   );
@@ -133,52 +144,58 @@ export const FichasPage: React.FC = () => {
   const fmtFecha = (d: string) => d ? new Date(d).toLocaleDateString('es-CO') : '—';
 
   return (
-    <div className="crud-page-container">
+    <div className="fichas-page-container redesign">
       <div className="crud-header-actions">
         <h2>FICHAS</h2>
-        <div className="crud-actions-right">
+        <div className="crud-header-right">
           <div className="crud-search-bar">
-            <span>🔍</span>
+            <span><FaSearch /></span>
             <input
-              type="text" placeholder="Search" className="crud-search-input"
+              type="text" placeholder="Buscar ficha..." className="crud-search-input"
               value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="btn-add-crud" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
-            Añadir Ficha
+          <button className="btn-pill btn-pill-add" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
+            <FaPlus /> añadir ficha
           </button>
         </div>
       </div>
 
       <div className="crud-table-wrapper">
-        <table className="crud-table">
+        <table className="crud-table redesign">
           <thead>
             <tr>
-              <th>N° Ficha</th>
+              <th>#</th>
+              <th>Número de Ficha</th>
               <th>Instructor Líder</th>
               <th>Ambiente</th>
               <th>Jornada</th>
               <th>Fecha Inicio</th>
               <th>Fecha Fin</th>
-              <th>Estado</th>
+              <th style={{ textAlign: 'center' }}>Estado</th>
               <th style={{ textAlign: 'center' }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map(f => (
               <tr key={f.id_ficha}>
-                <td className="bold-text">{f.numero_ficha}</td>
+                <td className="bold-text">{f.id_ficha}</td>
+                <td>{f.numero_ficha}</td>
                 <td>{f.instructor_lider}</td>
                 <td>{f.ambiente}</td>
                 <td>{f.jornada}</td>
                 <td>{fmtFecha(f.fecha_inicio)}</td>
                 <td>{fmtFecha(f.fecha_fin)}</td>
-                <td>
-                  <span className={`badge-estado ${(f.estado || '').toLowerCase()}`}>{f.estado}</span>
+                <td style={{ textAlign: 'center' }}>
+                  <span className={`badge-status ${(f.estado || '').toLowerCase()}`}>
+                    {f.estado}
+                  </span>
                 </td>
                 <td style={{ textAlign: 'center' }}>
-                  <button className="btn-action-edit" onClick={() => { setEditing(f); setIsModalOpen(true); }}>Editar</button>
-                  <button className="btn-action-delete" onClick={() => handleDelete(f)}>Eliminar</button>
+                  <div className="action-pill-group">
+                    <button className="btn-pill btn-pill-edit" onClick={() => { setEditing(f); setIsModalOpen(true); }}>Editar</button>
+                    <button className="btn-pill btn-pill-delete" onClick={() => handleDelete(f)}>Eliminar</button>
+                  </div>
                 </td>
               </tr>
             ))}

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Modal } from '../../molecules/Modal/Modal';
 import { UsuarioForm } from '../../organisms/UsuarioForm/UsuarioForm';
 import type { UsuarioData } from '../../organisms/UsuarioForm/UsuarioForm';
+import { FaSearch, FaPlus } from 'react-icons/fa';
 import './UsuariosPage.css';
 
 const API_URL = 'http://localhost:3000/usuarios';
 
-// Extender UsuarioData para llevar el id del backend
+
 interface UsuarioConId extends UsuarioData {
   id_usuarios?: number;
 }
@@ -15,11 +16,10 @@ export const UsuariosPage: React.FC = () => {
   const [usuarios, setUsuarios] = useState<UsuarioConId[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Modal states
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUsuario, setEditingUsuario] = useState<UsuarioConId | null>(null);
 
-  // Cargar usuarios desde el backend al montar el componente
   useEffect(() => {
     fetchUsuarios();
   }, []);
@@ -34,7 +34,7 @@ export const UsuariosPage: React.FC = () => {
     }
   };
 
-  // Handlers
+
   const handleOpenAdd = () => {
     setEditingUsuario(null);
     setIsModalOpen(true);
@@ -59,14 +59,14 @@ export const UsuariosPage: React.FC = () => {
   const handleSubmitForm = async (data: UsuarioData) => {
     try {
       if (editingUsuario?.id_usuarios) {
-        // Editar
+
         await fetch(`${API_URL}/${editingUsuario.id_usuarios}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
       } else {
-        // Crear nuevo
+
         await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -86,21 +86,23 @@ export const UsuariosPage: React.FC = () => {
   );
 
   return (
-    <div className="usuarios-page-container">
-      <div className="usuarios-header-actions">
+    <div className="usuarios-page-container redesign">
+      <div className="crud-header-actions">
         <h2>USUARIOS</h2>
-        <div className="usuarios-actions-right">
-          <div className="search-bar">
-            <i className="search-icon">🔍</i>
+        <div className="crud-header-right">
+          <div className="crud-search-bar">
+            <span><FaSearch /></span>
             <input
               type="text"
-              placeholder="Search"
-              className="search-input"
+              placeholder="Buscar usuario..."
+              className="crud-search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="btn-add-user" onClick={handleOpenAdd}>Añadir Usuario</button>
+          <button className="btn-pill btn-pill-add" onClick={handleOpenAdd}>
+            <FaPlus /> añadir usuario
+          </button>
         </div>
       </div>
 
@@ -131,8 +133,10 @@ export const UsuariosPage: React.FC = () => {
                   </span>
                 </td>
                 <td>
-                  <button className="btn-action-edit" onClick={() => handleOpenEdit(usuario)}>Editar</button>
-                  <button className="btn-action-delete" onClick={() => handleDelete(usuario)}>Eliminar</button>
+                  <div className="action-pill-group">
+                    <button className="btn-pill btn-pill-edit" onClick={() => handleOpenEdit(usuario)}>Editar</button>
+                    <button className="btn-pill btn-pill-delete" onClick={() => handleDelete(usuario)}>Eliminar</button>
+                  </div>
                 </td>
               </tr>
             ))}

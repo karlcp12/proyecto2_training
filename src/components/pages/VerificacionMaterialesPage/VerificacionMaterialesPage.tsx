@@ -63,7 +63,7 @@ export const VerificacionMaterialesPage: React.FC = () => {
       <div className="crud-page-container">
         <div className="crud-header-actions">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button className="btn-back" onClick={() => setVista('tabla')}>&#8592;</button>
+            <button className="btn-pill btn-pill-back" onClick={() => setVista('tabla')}>&#8592;</button>
             <h2>LISTA DE UNIDADES — {materialDetalle.nombre}</h2>
           </div>
         </div>
@@ -110,7 +110,7 @@ export const VerificacionMaterialesPage: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
-            <button className="btn-submit-crud" onClick={() => setVista('tabla')}>Volver</button>
+            <button className="btn-pill btn-pill-submit" onClick={() => setVista('tabla')}>Volver</button>
           </div>
         </div>
       </div>
@@ -156,8 +156,8 @@ export const VerificacionMaterialesPage: React.FC = () => {
                 </td>
                 <td style={{ textAlign: 'center' }}>
                   <button
-                    className="btn-add-crud"
-                    style={{ padding: '5px 14px', fontSize: '0.82rem' }}
+                    className="btn-pill btn-pill-add"
+                    style={{ padding: '5px 14px !important', fontSize: '0.75rem !important' }}
                     onClick={() => { setMaterialDetalle(m); setVista('lista'); }}
                   >
                     Ver lista

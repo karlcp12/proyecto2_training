@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../../molecules/Modal/Modal';
+import { FaSyncAlt } from 'react-icons/fa';
 import '../MaterialesPage/MaterialesPage.css';
 
 const API_URL = 'http://localhost:3000/bodega';
@@ -18,9 +19,9 @@ const StockForm: React.FC<{
   const [cantidad, setCantidad] = useState(material.cantidad);
 
   return (
-    <form className="crud-form" onSubmit={e => { e.preventDefault(); onSubmit(material.codigo_material, cantidad); }}>
+    <form className="crud-form redesign" onSubmit={e => { e.preventDefault(); onSubmit(material.codigo_material, cantidad); }}>
       <h3 className="crud-form-title">ACTUALIZAR STOCK</h3>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+      <div className="crud-form-grid">
         <div className="crud-form-group">
           <label>Código</label>
           <input value={material.codigo_material} disabled style={{ opacity: 0.6 }} />
@@ -43,9 +44,7 @@ const StockForm: React.FC<{
             required
           />
         </div>
-      </div>
-      <div className="crud-form-actions">
-        <button type="submit" className="btn-submit-crud">Guardar</button>
+        <button type="submit" className="btn-pill btn-pill-submit" style={{ gridColumn: 'span 2' }}>Guardar</button>
       </div>
     </form>
   );
@@ -53,7 +52,6 @@ const StockForm: React.FC<{
 
 export const ActualizarStockPage: React.FC = () => {
   const [materiales, setMateriales] = useState<Material[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null);
 
@@ -80,29 +78,17 @@ export const ActualizarStockPage: React.FC = () => {
     } catch (err) { console.error(err); }
   };
 
-  const filtered = materiales.filter(m =>
-    (m.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (m.tipo || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="crud-page-container">
+    <div className="crud-page-container redesign">
       <div className="crud-header-actions">
         <h2>ACTUALIZAR STOCK</h2>
-        <div className="crud-actions-right">
-          <div className="crud-search-bar">
-            <span>🔍</span>
-            <input
-              type="text" placeholder="Search" className="crud-search-input"
-              value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <button className="btn-add-crud" onClick={fetchMateriales}>↻ Actualizar</button>
-        </div>
+        <button className="btn-pill btn-pill-add" onClick={fetchMateriales}>
+          <FaSyncAlt /> Actualizar
+        </button>
       </div>
 
       <div className="crud-table-wrapper">
-        <table className="crud-table">
+        <table className="crud-table redesign">
           <thead>
             <tr>
               <th>#</th>
@@ -113,7 +99,7 @@ export const ActualizarStockPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(m => (
+            {materiales.map(m => (
               <tr key={m.codigo_material}>
                 <td className="bold-text">{m.codigo_material}</td>
                 <td>{m.nombre}</td>
@@ -125,7 +111,7 @@ export const ActualizarStockPage: React.FC = () => {
                 <td>{m.tipo}</td>
                 <td style={{ textAlign: 'center' }}>
                   <button
-                    className="btn-action-edit"
+                    className="btn-pill btn-pill-edit"
                     onClick={() => { setSelectedMaterial(m); setIsModalOpen(true); }}
                   >
                     Actualizar Stock

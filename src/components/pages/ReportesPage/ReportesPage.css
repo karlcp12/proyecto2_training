@@ -1,6 +1,7 @@
 .reportes-page-container {
   background-color: #ffffff;
-  border-radius: 12px;
+  border: var(--border-premium);
+  border-radius: var(--radius-lg);
   padding: 24px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;

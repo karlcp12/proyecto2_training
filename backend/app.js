@@ -12,6 +12,7 @@ import fichasRouter from './router/fichasRouter.js'
 import bodegaRouter from './router/bodegaRouter.js'
 import solicitudesRouter from './router/solicitudesRouter.js'
 import prestamosRouter from './router/prestamosRouter.js'
+import areaMaterialesRouter from './router/areaMaterialesRouter.js'
 import devolucionesRouter from './router/devolucionesRouter.js'
 import detallePrestamoRouter from './router/detallePrestamoRouter.js'
 
@@ -25,6 +26,7 @@ app.use('/aprendices', aprendizRouter)
 app.use('/usuarios', usuarioRouter)
 app.use('/instructores', instructorRouter)
 app.use('/centros', centrosRouter)
+app.use('/centros', areaMaterialesRouter) 
 app.use('/roles', rolesRouter)
 app.use('/programas', programaRouter)
 app.use('/fichas', fichasRouter)

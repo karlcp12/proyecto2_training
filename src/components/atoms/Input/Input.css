@@ -1,10 +1,11 @@
 .input {
-  width: auto;
+  width: 100%;
   padding: 10px 12px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 14px;
   outline: none;
+  box-sizing: border-box; /* Crucial for width: 100% with padding */
 }
 
 .input:focus {

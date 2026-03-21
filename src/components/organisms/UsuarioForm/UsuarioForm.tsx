@@ -71,13 +71,11 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
   };
 
   return (
-    <form className="usuario-form-container" onSubmit={handleSubmit}>
-      <div className="usuario-form-header">
-        <h3>{isEditing ? "EDITAR USUARIO" : "AÑADIR USUARIO"}</h3>
-      </div>
+    <form className="crud-form redesign" onSubmit={handleSubmit}>
+      <h3 className="crud-form-title">{isEditing ? "EDITAR USUARIO" : "AÑADIR USUARIO"}</h3>
 
-      <div className="usuario-form-grid">
-        <div className="usario-form-group">
+      <div className="crud-form-grid">
+        <div className="crud-form-group">
           <label>Nombres</label>
           <input
             type="text"
@@ -88,7 +86,7 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
             placeholder="Nombres"
           />
         </div>
-        <div className="usario-form-group">
+        <div className="crud-form-group">
           <label>Apellidos</label>
           <input
             type="text"
@@ -99,14 +97,14 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
             placeholder="Apellidos"
           />
         </div>
-        <div className="usario-form-group">
+        <div className="crud-form-group">
           <label>Rol</label>
           <select name="rol" value={formData.rol} onChange={handleChange}>
             <option value="Administrador">Administrador</option>
             <option value="Usuario">Usuario</option>
           </select>
         </div>
-        <div className="usario-form-group">
+        <div className="crud-form-group">
           <label>Teléfono</label>
           <input
             type="text"
@@ -117,7 +115,7 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
             placeholder="Teléfono"
           />
         </div>
-        <div className="usario-form-group">
+        <div className="crud-form-group">
           <label>Numero Documento</label>
           <input
             type="text"
@@ -128,7 +126,7 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
             placeholder="Documento"
           />
         </div>
-        <div className="usario-form-group">
+        <div className="crud-form-group">
           <label>Gmail</label>
           <input
             type="email"
@@ -142,7 +140,7 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
 
         {/* Status Dropdown useful for editing directly */}
         {isEditing && (
-           <div className="usario-form-group">
+           <div className="crud-form-group">
             <label>Estado</label>
             <select name="estado" value={formData.estado} onChange={handleChange}>
               <option value="Activo">Activo</option>
@@ -152,19 +150,16 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
         )}
         
         {/* Mock password field as seen on design */}
-        <div className={`usario-form-group ${!isEditing ? "full-width" : ""}`}>
+        <div className="crud-form-group">
           <label>Contraseña</label>
           <input
             type="password"
             name="password"
-            placeholder={isEditing ? "Dejar en blanco para mantener" : "Contraseña"}
+            placeholder={isEditing ? "Mantener" : "Contraseña"}
           />
         </div>
 
-      </div>
-
-      <div className="usuario-form-actions">
-        <button type="submit" className="btn-submit-usuario">
+        <button type="submit" className="btn-submit-redesigned" style={{ gridColumn: 'span 2' }}>
           Aceptar
         </button>
       </div>

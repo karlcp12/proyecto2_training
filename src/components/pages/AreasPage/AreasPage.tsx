@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../../molecules/Modal/Modal';
-import '../MaterialesPage/MaterialesPage.css';
+import { FaMapMarkedAlt, FaPlus, FaSearch } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import './AreasPage.css';
+import '../MaterialesPage/MaterialesPage.css'; // Keep shared form styles
 
 const API_URL = 'http://localhost:3000/centros';
 
@@ -25,18 +28,18 @@ const AreaForm: React.FC<{
       <h3 className="crud-form-title">{isEditing ? 'EDITAR ÁREA' : 'AÑADIR ÁREA'}</h3>
       <div className="crud-form-grid">
         <div className="crud-form-group">
-          <label>Descripción de la sede</label>
+          <label>Nombre del área</label>
           <input
             name="nombre_area"
             value={form.nombre_area}
             onChange={e => setForm({ ...form, nombre_area: e.target.value })}
-            placeholder="Nombre del área"
+            placeholder="Ej: Bodega de Sistemas, Taller de Soldadura"
             required
           />
         </div>
       </div>
       <div className="crud-form-actions">
-        <button type="submit" className="btn-submit-crud">Aceptar</button>
+        <button type="submit" className="btn-pill btn-pill-submit">Aceptar</button>
       </div>
     </form>
   );
@@ -47,13 +50,15 @@ export const AreasPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<Area | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => { fetchAreas(); }, []);
 
   const fetchAreas = async () => {
     try {
       const res = await fetch(API_URL);
-      setAreas(await res.json());
+      const data = await res.json();
+      setAreas(Array.isArray(data) ? data : []);
     } catch (err) { console.error(err); }
   };
 
@@ -85,45 +90,46 @@ export const AreasPage: React.FC = () => {
   );
 
   return (
-    <div className="crud-page-container">
+    <div className="areas-page-container redesign">
       <div className="crud-header-actions">
-        <h2>ÁREAS</h2>
-        <div className="crud-actions-right">
+        <h2>ÁREAS / SEDES</h2>
+        <div className="crud-header-right">
           <div className="crud-search-bar">
-            <span>🔍</span>
+            <span><FaSearch /></span>
             <input
-              type="text" placeholder="Search" className="crud-search-input"
+              type="text" placeholder="Buscar área..." className="crud-search-input"
               value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="btn-add-crud" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
-            Añadir Área
+          <button className="btn-pill btn-pill-add" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
+            <FaPlus /> añadir área
           </button>
         </div>
       </div>
 
-      <div className="crud-table-wrapper">
-        <table className="crud-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre del Área</th>
-              <th style={{ textAlign: 'center' }}>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map(a => (
-              <tr key={a.id_area}>
-                <td className="bold-text">{a.id_area}</td>
-                <td>{a.nombre_area}</td>
-                <td style={{ textAlign: 'center' }}>
-                  <button className="btn-action-edit" onClick={() => { setEditing(a); setIsModalOpen(true); }}>Editar</button>
-                  <button className="btn-action-delete" onClick={() => handleDelete(a)}>Eliminar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="areas-grid">
+        {filtered.map(a => (
+          <div 
+            className="area-card" 
+            key={a.id_area} 
+            onClick={() => navigate(`/app/areas/${a.id_area}/bodega`)}
+            style={{ cursor: 'pointer' }}
+          >
+            <div className="area-icon-wrapper">
+              <FaMapMarkedAlt />
+            </div>
+            <h3 className="area-name">{a.nombre_area}</h3>
+            <span className="area-id-badge">ID: {a.id_area}</span>
+            <div className="area-card-actions" onClick={e => e.stopPropagation()}>
+              <button className="btn-pill btn-pill-edit" onClick={() => { setEditing(a); setIsModalOpen(true); }}>
+                Editar
+              </button>
+              <button className="btn-pill btn-pill-delete" onClick={() => handleDelete(a)}>
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
