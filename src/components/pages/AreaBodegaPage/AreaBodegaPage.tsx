@@ -55,6 +55,7 @@ export const AreaBodegaPage: React.FC = () => {
     fetchAreaInfo();
     fetchMaterialesArea();
     fetchCatalogoGeneral();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleAssign = async (e: React.FormEvent) => {

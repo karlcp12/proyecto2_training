@@ -55,14 +55,14 @@ export const ActualizarStockPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null);
 
-  useEffect(() => { fetchMateriales(); }, []);
-
   const fetchMateriales = async () => {
     try {
       const res = await fetch(API_URL);
       setMateriales(await res.json());
     } catch (err) { console.error(err); }
   };
+
+  useEffect(() => { fetchMateriales(); }, []);
 
   const handleUpdateStock = async (id: number, nuevaCantidad: number) => {
     const mat = materiales.find(m => m.codigo_material === id);

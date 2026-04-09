@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from '../../molecules/Modal/Modal';
 import '../MaterialesPage/MaterialesPage.css';
 import './VerificacionMaterialesPage.css';
 
@@ -14,11 +13,17 @@ interface Material {
   enUso?: number;
 }
 
+interface Solicitud {
+  codigo_material: number;
+  estado?: string;
+  cantidad?: number | string;
+}
+
 type VistaVerif = 'tabla' | 'lista';
 
 export const VerificacionMaterialesPage: React.FC = () => {
   const [materiales, setMateriales] = useState<Material[]>([]);
-  const [solicitudes, setSolicitudes] = useState<any[]>([]);
+  const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [vista, setVista] = useState<VistaVerif>('tabla');
   const [materialDetalle, setMaterialDetalle] = useState<Material | null>(null);
@@ -32,7 +37,7 @@ export const VerificacionMaterialesPage: React.FC = () => {
   const getEnUso = (codigoMaterial: number) => {
     return solicitudes
       .filter(s => s.codigo_material == codigoMaterial && (s.estado || '').toLowerCase() === 'aprobada')
-      .reduce((sum: number, s: any) => sum + (Number(s.cantidad) || 0), 0);
+      .reduce((sum: number, s: Solicitud) => sum + (Number(s.cantidad) || 0), 0);
   };
 
   const materialesConUso: Material[] = materiales.map(m => ({

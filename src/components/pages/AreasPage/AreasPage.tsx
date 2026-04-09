@@ -52,8 +52,6 @@ export const AreasPage: React.FC = () => {
   const [editing, setEditing] = useState<Area | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => { fetchAreas(); }, []);
-
   const fetchAreas = async () => {
     try {
       const res = await fetch(API_URL);
@@ -61,6 +59,8 @@ export const AreasPage: React.FC = () => {
       setAreas(Array.isArray(data) ? data : []);
     } catch (err) { console.error(err); }
   };
+
+  useEffect(() => { fetchAreas(); }, []);
 
   const handleSubmit = async (data: Area) => {
     try {

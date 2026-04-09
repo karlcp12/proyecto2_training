@@ -20,10 +20,6 @@ export const UsuariosPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUsuario, setEditingUsuario] = useState<UsuarioConId | null>(null);
 
-  useEffect(() => {
-    fetchUsuarios();
-  }, []);
-
   const fetchUsuarios = async () => {
     try {
       const res = await fetch(API_URL);
@@ -33,6 +29,10 @@ export const UsuariosPage: React.FC = () => {
       console.error('Error al cargar usuarios:', err);
     }
   };
+
+  useEffect(() => {
+    fetchUsuarios();
+  }, []);
 
 
   const handleOpenAdd = () => {

@@ -33,7 +33,14 @@ const MaterialForm: React.FC<{
       fecha_vencimiento: '', categoria: '', ente_sena: ''
     }
   );
-  const [areas, setAreas] = useState<any[]>([]);
+  const [areas, setAreas] = useState<{ id_area: number; nombre_area: string }[]>([]);
+
+  const fetchAreas = async () => {
+    try {
+      const res = await fetch(AREAS_URL);
+      setAreas(await res.json());
+    } catch (err) { console.error(err); }
+  };
 
   useEffect(() => {
     fetchAreas();
@@ -43,13 +50,6 @@ const MaterialForm: React.FC<{
       fecha_vencimiento: '', categoria: '', ente_sena: ''
     });
   }, [initial]);
-
-  const fetchAreas = async () => {
-    try {
-      const res = await fetch(AREAS_URL);
-      setAreas(await res.json());
-    } catch (err) { console.error(err); }
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -146,14 +146,14 @@ export const MaterialesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<Material | null>(null);
 
-  useEffect(() => { fetchMateriales(); }, []);
-
   const fetchMateriales = async () => {
     try {
       const res = await fetch(API_URL);
       setMateriales(await res.json());
     } catch (err) { console.error(err); }
   };
+
+  useEffect(() => { fetchMateriales(); }, []);
 
   const handleSubmit = async (data: Material) => {
     try {

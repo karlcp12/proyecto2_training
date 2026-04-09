@@ -21,7 +21,7 @@ export const NotificacionesPage: React.FC = () => {
       .then(r => r.json())
       .then(solicitudes => {
         // Convertir solicitudes en notificaciones visuales
-        const notifs: Alerta[] = solicitudes.map((s: any, i: number) => ({
+        const notifs: Alerta[] = solicitudes.map((s: { id_solicitud: number; estado: string; nombre_material?: string; id_ficha: number; fecha?: string }) => ({
           id_alerta: s.id_solicitud,
           tipo_alerta: s.estado === 'Pendiente' ? 'Solicitud Pendiente' : `Solicitud ${s.estado}`,
           descripcion: s.nombre_material

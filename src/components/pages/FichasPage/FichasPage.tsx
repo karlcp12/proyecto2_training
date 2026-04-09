@@ -103,14 +103,14 @@ export const FichasPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<Ficha | null>(null);
 
-  useEffect(() => { fetchFichas(); }, []);
-
   const fetchFichas = async () => {
     try {
       const res = await fetch(API_URL);
       setFichas(await res.json());
     } catch (err) { console.error(err); }
   };
+
+  useEffect(() => { fetchFichas(); }, []);
 
   const handleSubmit = async (data: Ficha) => {
     try {

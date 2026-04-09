@@ -22,6 +22,8 @@ interface Solicitud {
 interface Material { codigo_material: number; nombre: string; }
 interface Ficha { id_ficha: number; numero_ficha: string; }
 
+const emptySolicitud: Solicitud = { id_aprendiz: '', codigo_material: '', id_ficha: '', cantidad: 1, estado: 'Pendiente' };
+
 const SolicitudForm: React.FC<{
   initial?: Solicitud;
   isEditing: boolean;
@@ -29,10 +31,9 @@ const SolicitudForm: React.FC<{
   fichas: Ficha[];
   onSubmit: (data: Solicitud) => void;
 }> = ({ initial, isEditing, materiales, fichas, onSubmit }) => {
-  const empty: Solicitud = { id_aprendiz: '', codigo_material: '', id_ficha: '', cantidad: 1, estado: 'Pendiente' };
-  const [form, setForm] = useState<Solicitud>(initial || empty);
+  const [form, setForm] = useState<Solicitud>(initial || emptySolicitud);
 
-  useEffect(() => { setForm(initial || empty); }, [initial]);
+  useEffect(() => { setForm(initial || emptySolicitud); }, [initial]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -107,16 +108,16 @@ export const SolicitudesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<Solicitud | null>(null);
 
+  const fetchSolicitudes = async () => {
+    try { setSolicitudes(await (await fetch(API_URL)).json()); }
+    catch (err) { console.error(err); }
+  };
+
   useEffect(() => {
     fetchSolicitudes();
     fetch(MAT_URL).then(r => r.json()).then(setMateriales).catch(() => {});
     fetch(FICHAS_URL).then(r => r.json()).then(setFichas).catch(() => {});
   }, []);
-
-  const fetchSolicitudes = async () => {
-    try { setSolicitudes(await (await fetch(API_URL)).json()); }
-    catch (err) { console.error(err); }
-  };
 
   const handleSubmit = async (data: Solicitud) => {
     try {
