@@ -22,8 +22,12 @@ app.use(express.json())
 app.use(cors())
 
 // rutas
+app.use('/usuarios', usuarioRouter) // Usuarios ruta abierta para el login
+
+import { authMiddleware } from './middleware/authMiddleware.js';
+app.use(authMiddleware);
+
 app.use('/aprendices', aprendizRouter)
-app.use('/usuarios', usuarioRouter)
 app.use('/instructores', instructorRouter)
 app.use('/centros', centrosRouter)
 app.use('/centros', areaMaterialesRouter) 

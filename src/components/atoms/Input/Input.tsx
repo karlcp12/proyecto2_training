@@ -1,16 +1,14 @@
 import "./Input.css";
 
-interface InputProps {
-  type?: string;
-  placeholder?: string;
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  // Las props estándar de input se heredan
 }
 
-export const Input = ({ type = "text", placeholder }: InputProps) => {
+export const Input = ({ ...rest }: InputProps) => {
   return (
     <input
       className="input"
-      type={type}
-      placeholder={placeholder}
+      {...rest}
     />
   );
 };

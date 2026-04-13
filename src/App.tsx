@@ -14,6 +14,7 @@ import { NotificacionesPage } from "./components/pages/NotificacionesPage/Notifi
 import { ActualizarStockPage } from "./components/pages/ActualizarStockPage/ActualizarStockPage";
 import { SolicitudesPage } from "./components/pages/SolicitudesPage/SolicitudesPage";
 import { VerificacionMaterialesPage } from "./components/pages/VerificacionMaterialesPage/VerificacionMaterialesPage";
+import { ProtectedRoute } from "./components/templates/ProtectedRoute/ProtectedRoute";
 
 function App() {
   return (
@@ -23,8 +24,9 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/recover-password" element={<RecoverPasswordPage />} />
         
-        <Route path="/app" element={<MainLayout />}>
-          <Route index element={<MainMenuDefaultPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/app" element={<MainLayout />}>
+            <Route index element={<MainMenuDefaultPage />} />
           <Route path="materiales" element={<MaterialesPage />} />
           <Route path="areas" element={<AreasPage />} />
           <Route path="areas/:id/bodega" element={<AreaBodegaPage />} />
@@ -32,9 +34,10 @@ function App() {
           <Route path="usuarios" element={<UsuariosPage />} />
           <Route path="reportes" element={<ReportesPage />} />
           <Route path="notificaciones" element={<NotificacionesPage />} />
-          <Route path="actualizar-stock" element={<ActualizarStockPage />} />
-          <Route path="solicitudes" element={<SolicitudesPage />} />
-          <Route path="verificacion" element={<VerificacionMaterialesPage />} />
+            <Route path="actualizar-stock" element={<ActualizarStockPage />} />
+            <Route path="solicitudes" element={<SolicitudesPage />} />
+            <Route path="verificacion" element={<VerificacionMaterialesPage />} />
+          </Route>
         </Route>
       </Routes>
 

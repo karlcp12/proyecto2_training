@@ -10,10 +10,30 @@ import "./LoginForm.css";
 export const LoginForm = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [usuario, setUsuario] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    // Simular que el login es exitoso y navegar al app
-    navigate("/app");
+  const handleLogin = async () => {
+    setError("");
+    try {
+      const response = await fetch("http://localhost:3000/usuarios/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ usuario, contrasena }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        navigate("/app");
+      } else {
+        setError(data.mensaje || "Error al iniciar sesión");
+      }
+    } catch (err) {
+      setError("Error de red, intenta nuevamente.");
+    }
   };
 
   return (
@@ -25,7 +45,11 @@ export const LoginForm = () => {
 
       <div className="field">
         <Label text="Usuario" />
-        <Input placeholder="Ingrese su usuario" />
+        <Input 
+          placeholder="Ingrese su usuario" 
+          value={usuario} 
+          onChange={(e) => setUsuario(e.target.value)} 
+        />
       </div>
 
       <div className="field">
@@ -34,6 +58,8 @@ export const LoginForm = () => {
           <Input 
             type={showPassword ? "text" : "password"} 
             placeholder="Ingrese su contraseña" 
+            value={contrasena}
+            onChange={(e) => setContrasena(e.target.value)}
           />
           <button 
             type="button" 
@@ -52,6 +78,8 @@ export const LoginForm = () => {
       <div className="forgot">
         <Link text="¿Olvidó su contraseña?" href="/recover-password" />
       </div>
+
+      {error && <div style={{ color: "red", fontSize: "14px", marginTop: "10px", textAlign: "center" }}>{error}</div>}
 
       <Button text="Ingresar" onClick={handleLogin} />
 
