@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { FaCheckCircle, FaTimesCircle, FaInfoCircle } from 'react-icons/fa';
+import { BarChartComponent } from '../../organisms/Charts/BarChartComponent';
+import { LineChartComponent } from '../../organisms/Charts/LineChartComponent';
+import { PieChartComponent } from '../../organisms/Charts/PieChartComponent';
+import '../../organisms/Charts/Charts.css';
 import './ReportesPage.css';
 
 interface Reporte {
@@ -11,13 +15,13 @@ interface Reporte {
 }
 
 const mockReportesValuo: Reporte[] = [
-  { numero: '00001', fecha: '08/08/2025', area: 'TICS', responsable: 'Katherine', seleccionado: true },
-  { numero: '00002', fecha: '11/08/2025', area: 'PAE', responsable: 'Jhan Breyner', seleccionado: false },
+  { numero: '00001', fecha: '2025-08-08', area: 'TICS', responsable: 'Katherine', seleccionado: true },
+  { numero: '00002', fecha: '2025-08-11', area: 'PAE', responsable: 'Jhan Breyner', seleccionado: false },
 ];
 
 const mockReportesCompras: Reporte[] = [
-  { numero: '00001', fecha: '05/09/2025', area: 'Compras', responsable: 'Carlos Ruiz', seleccionado: true },
-  { numero: '00002', fecha: '15/09/2025', area: 'Logística', responsable: 'Ana Mora', seleccionado: false },
+  { numero: '00001', fecha: '2025-09-05', area: 'Compras', responsable: 'Carlos Ruiz', seleccionado: true },
+  { numero: '00002', fecha: '2025-09-15', area: 'Logística', responsable: 'Ana Mora', seleccionado: false },
 ];
 
 // Mock data for the detail view
@@ -41,7 +45,32 @@ const mockDetalleReporte = {
   ],
 };
 
-type Vista = 'inicio' | 'tabla' | 'detalle';
+// Mock data for charts
+const mockChartData = {
+  materialesMasUsados: [
+    { name: 'Laptop HP', quantity: 45 },
+    { name: 'Monitor 24', quantity: 30 },
+    { name: 'Silla Ergonómica', quantity: 25 },
+    { name: 'Teclado', quantity: 20 },
+    { name: 'Mouse', quantity: 15 },
+  ],
+  movimientosPorFecha: [
+    { date: '2026-04-07', count: 10 },
+    { date: '2026-04-08', count: 15 },
+    { date: '2026-04-09', count: 8 },
+    { date: '2026-04-10', count: 20 },
+    { date: '2026-04-11', count: 25 },
+    { date: '2026-04-12', count: 18 },
+    { date: '2026-04-13', count: 22 },
+  ],
+  distribucionSolicitudes: [
+    { name: 'Aprobado', value: 60 },
+    { name: 'Pendiente', value: 30 },
+    { name: 'Rechazado', value: 10 },
+  ]
+};
+
+type Vista = 'inicio' | 'tabla' | 'detalle' | 'graficas';
 type TipoReporte = 'valuo' | 'compras';
 
 export const ReportesPage: React.FC = () => {
@@ -49,6 +78,12 @@ export const ReportesPage: React.FC = () => {
   const [tipoActivo, setTipoActivo] = useState<TipoReporte>('valuo');
   const [reporteDetalle, setReporteDetalle] = useState<Reporte | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Filter states
+  const [filterFechaInicio, setFilterFechaInicio] = useState('');
+  const [filterFechaFin, setFilterFechaFin] = useState('');
+  const [filterTipoMaterial, setFilterTipoMaterial] = useState('Todos');
+  const [filterArea, setFilterArea] = useState('Todas');
 
   const reportesActuales = tipoActivo === 'valuo' ? mockReportesValuo : mockReportesCompras;
 
@@ -71,6 +106,7 @@ export const ReportesPage: React.FC = () => {
 
   const handleVolver = () => {
     if (vista === 'detalle') setVista('tabla');
+    else if (vista === 'graficas') setVista('inicio');
     else setVista('inicio');
   };
 
@@ -113,6 +149,86 @@ export const ReportesPage: React.FC = () => {
             </div>
             <span className="reporte-card-label">Reporte de<br/>COMPRAS</span>
           </button>
+
+          <button className="reporte-card-btn" onClick={() => setVista('graficas')}>
+            <div className="reporte-card-icon">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" width="70" height="70">
+                <rect x="8" y="12" width="48" height="40" rx="4" fill="#e3f2fd" stroke="#2196f3" strokeWidth="3"/>
+                <path d="M16 44 L28 32 L40 38 L52 24" stroke="#2196f3" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="16" cy="44" r="3" fill="#2196f3"/>
+                <circle cx="28" cy="32" r="3" fill="#2196f3"/>
+                <circle cx="40" cy="38" r="3" fill="#2196f3"/>
+                <circle cx="52" cy="24" r="3" fill="#2196f3"/>
+              </svg>
+            </div>
+            <span className="reporte-card-label">Estadísticas y<br/>GRÁFICAS</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── VISTA GRAFICAS ──────────────────────────────────────────────────────────
+  if (vista === 'graficas') {
+    return (
+      <div className="reportes-page-container">
+        <div className="reportes-header-actions">
+          <div className="reportes-titulo-con-back">
+            <button className="btn-back" onClick={handleVolver} title="Volver">&#8592;</button>
+            <h2>ESTADÍSTICAS Y GRÁFICAS</h2>
+          </div>
+          <button className="btn-print-report" onClick={() => window.print()}>Exportar PDF</button>
+        </div>
+
+        {/* Filtros */}
+        <div className="dashboard-card" style={{ marginBottom: '20px' }}>
+          <div className="dashboard-card-title">Filtros de Reporte</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
+            <div className="crud-form-group">
+              <label>Fecha Inicio</label>
+              <input type="date" value={filterFechaInicio} onChange={(e) => setFilterFechaInicio(e.target.value)} />
+            </div>
+            <div className="crud-form-group">
+              <label>Fecha Fin</label>
+              <input type="date" value={filterFechaFin} onChange={(e) => setFilterFechaFin(e.target.value)} />
+            </div>
+            <div className="crud-form-group">
+              <label>Tipo de Material</label>
+              <select value={filterTipoMaterial} onChange={(e) => setFilterTipoMaterial(e.target.value)}>
+                <option>Todos</option>
+                <option>Electrónico</option>
+                <option>Mobiliario</option>
+                <option>Herramientas</option>
+              </select>
+            </div>
+            <div className="crud-form-group">
+              <label>Área</label>
+              <select value={filterArea} onChange={(e) => setFilterArea(e.target.value)}>
+                <option>Todas</option>
+                <option>TICS</option>
+                <option>PAE</option>
+                <option>Logística</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Gráficas en Grid */}
+        <div className="dashboard-grid" style={{ padding: 0 }}>
+          <div className="dashboard-card" style={{ gridColumn: 'span 2' }}>
+            <div className="dashboard-card-title">Materiales más utilizados</div>
+            <BarChartComponent data={mockChartData.materialesMasUsados} xKey="name" yKey="quantity" />
+          </div>
+
+          <div className="dashboard-card">
+            <div className="dashboard-card-title">Distribución de Solicitudes</div>
+            <PieChartComponent data={mockChartData.distribucionSolicitudes} />
+          </div>
+
+          <div className="dashboard-card" style={{ gridColumn: 'span 3' }}>
+            <div className="dashboard-card-title">Movimientos (Entradas/Salidas) por fecha</div>
+            <LineChartComponent data={mockChartData.movimientosPorFecha} xKey="date" yKey="count" />
+          </div>
         </div>
       </div>
     );

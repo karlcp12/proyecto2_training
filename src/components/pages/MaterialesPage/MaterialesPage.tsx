@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../../molecules/Modal/Modal';
+import { SummaryCard } from '../../organisms/Charts/SummaryCard';
+import { BarChartComponent } from '../../organisms/Charts/BarChartComponent';
+import { GaugeChartComponent } from '../../organisms/Charts/GaugeChartComponent';
+import { FaBox, FaExclamationTriangle, FaHistory } from 'react-icons/fa';
+import '../../organisms/Charts/Charts.css';
 import './MaterialesPage.css';
 
 const API_URL = 'http://localhost:3000/bodega';
@@ -90,15 +95,60 @@ export const MaterialesPage: React.FC = () => {
     }
   };
 
-  const filtered = materiales.filter(m =>
+  const filtered = materiales.filter((m: Material) =>
     (m.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     (m.tipo || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Stats calculation
+  const totalMateriales = materiales.length;
+  const materialesCriticos = materiales.filter((m: Material) => Number(m.cantidad) < 10).length;
+  const stockData = materiales.slice(0, 8).map((m: Material) => ({
+    name: m.nombre,
+    stock: Number(m.cantidad)
+  }));
+  const totalStock = materiales.reduce((acc: number, curr: Material) => acc + Number(curr.cantidad), 0);
+  const capacity = 1000; // Mock capacity for gauge
+  const occupancy = Math.min(Math.round((totalStock / capacity) * 100), 100);
+
   return (
     <div className="crud-page-container">
+      {/* Resumen Visual */}
+      <div className="dashboard-grid" style={{ marginBottom: '20px', padding: 0 }}>
+        <SummaryCard 
+          title="Total Materiales" 
+          value={totalMateriales} 
+          icon={<FaBox />} 
+          color="#2196f3" 
+        />
+        <SummaryCard 
+          title="Materiales Críticos" 
+          value={materialesCriticos} 
+          icon={<FaExclamationTriangle />} 
+          color="#f44336" 
+          subtitle="Stock menor a 10"
+        />
+        <SummaryCard 
+          title="Últimos Movimientos" 
+          value={12} 
+          icon={<FaHistory />} 
+          color="#4caf50" 
+          subtitle="Hoy"
+        />
+
+        <div className="dashboard-card" style={{ gridColumn: 'span 2' }}>
+          <div className="dashboard-card-title">Stock por Material</div>
+          <BarChartComponent data={stockData} xKey="name" yKey="stock" horizontal={true} />
+        </div>
+
+        <div className="dashboard-card">
+          <div className="dashboard-card-title">Ocupación de Inventario</div>
+          <GaugeChartComponent value={occupancy} label="Capacidad Total" />
+        </div>
+      </div>
+
       <div className="crud-header-actions">
-        <h2>MATERIALES</h2>
+        <h2>TABLA DE MATERIALES</h2>
         <div className="crud-actions-right">
           <div className="crud-search-bar">
             <span>🔍</span>
