@@ -15,18 +15,23 @@ import {
 } from "react-icons/fa";
 import "./Sidebar.css";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  isCollapsed: boolean;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
   const [isGestionOpen, setIsGestionOpen] = useState(true);
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    localStorage.removeItem('user');
     navigate("/");
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-logo">
-        <Logo width={180} />
+        <Logo width={isCollapsed ? 40 : 180} />
       </div>
 
       <nav className="sidebar-nav">

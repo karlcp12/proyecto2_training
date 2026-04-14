@@ -249,4 +249,19 @@
 
 @media (max-width: 600px) {
   .crud-form-grid { grid-template-columns: 1fr; }
+  
+  .crud-header-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .crud-actions-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .crud-search-bar {
+    max-width: none;
+    flex: 1;
+  }
 }

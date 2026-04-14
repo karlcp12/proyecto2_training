@@ -4,7 +4,7 @@ import { UsuarioForm } from '../../organisms/UsuarioForm/UsuarioForm';
 import type { UsuarioData } from '../../organisms/UsuarioForm/UsuarioForm';
 import './UsuariosPage.css';
 
-const API_URL = 'http://localhost:3000/usuarios';
+const API_URL = 'http://localhost:3001/usuarios';
 
 // Extender UsuarioData para llevar el id del backend
 interface UsuarioConId extends UsuarioData {

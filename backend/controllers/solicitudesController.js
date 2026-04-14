@@ -12,12 +12,16 @@ export const crearSolicitud = async (req, res) => {
 };
 
 export const obtenerSolicitudes = async (req, res) => {
-    const query = `SELECT s.ID_SOLICITUD as id_solicitud, s.ID_APRENDIZ as id_aprendiz,
-        s.CODIGO_MATERIAL as codigo_material, m.NOMBRE as nombre_material,
-        s.ID_FICHA as id_ficha, s.CANTIDAD as cantidad,
-        s.FECHA as fecha, s.ESTADO as estado
+    const query = `
+        SELECT s.ID_SOLICITUD as id_solicitud, s.ID_APRENDIZ as id_aprendiz,
+               CONCAT(a.NOMBRE, ' ', a.APELLIDO) as nombre_aprendiz,
+               s.CODIGO_MATERIAL as codigo_material, m.NOMBRE as nombre_material,
+               s.ID_FICHA as id_ficha, f.NUMERO_FICHA as numero_ficha,
+               s.CANTIDAD as cantidad, s.FECHA as fecha, s.ESTADO as estado
         FROM SOLICITUDES s
-        LEFT JOIN MATERIALES m ON s.CODIGO_MATERIAL = m.CODIGO_MATERIAL`;
+        LEFT JOIN MATERIALES m ON s.CODIGO_MATERIAL = m.CODIGO_MATERIAL
+        LEFT JOIN APRENDICES a ON s.ID_APRENDIZ = a.ID_APRENDIZ
+        LEFT JOIN FICHAS f ON s.ID_FICHA = f.ID_FICHA`;
     try {
         const [rows] = await pool.query(query);
         res.status(200).json(rows);

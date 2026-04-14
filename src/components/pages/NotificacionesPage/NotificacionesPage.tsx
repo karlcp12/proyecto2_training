@@ -3,7 +3,7 @@ import { FaInfoCircle } from 'react-icons/fa';
 import '../MaterialesPage/MaterialesPage.css';
 import './NotificacionesPage.css';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://localhost:3001';
 
 interface Alerta {
   id_alerta: number;
@@ -17,31 +17,16 @@ export const NotificacionesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_URL}/solicitudes`)
+    fetch(`${API_URL}/stats/alertas`)
       .then(r => r.json())
-      .then(solicitudes => {
-        // Convertir solicitudes en notificaciones visuales
-        const notifs: Alerta[] = solicitudes.map((s: any, i: number) => ({
-          id_alerta: s.id_solicitud,
-          tipo_alerta: s.estado === 'Pendiente' ? 'Solicitud Pendiente' : `Solicitud ${s.estado}`,
-          descripcion: s.nombre_material
-            ? `Material: ${s.nombre_material} — Ficha #${s.id_ficha}`
-            : `Solicitud #${s.id_solicitud} — Ficha #${s.id_ficha}`,
-          fecha: s.fecha ? new Date(s.fecha).toLocaleDateString('es-CO') : '—',
-        }));
-        setAlertas(notifs);
+      .then(data => {
+        setAlertas(data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
-  const mockFijos: Alerta[] = [
-    { id_alerta: 9001, tipo_alerta: 'Stock Bajo', descripcion: 'Hay materiales con stock por debajo del mínimo', fecha: new Date().toLocaleDateString('es-CO') },
-    { id_alerta: 9002, tipo_alerta: 'Devolución Pendiente', descripcion: 'Existen préstamos con devolución vencida', fecha: new Date().toLocaleDateString('es-CO') },
-    { id_alerta: 9003, tipo_alerta: 'Verificación de Materiales', descripcion: 'Quedan materiales sin verificar este mes', fecha: new Date().toLocaleDateString('es-CO') },
-  ];
-
-  const todas = [...mockFijos, ...alertas];
+  const todas = alertas;
 
   return (
     <div className="crud-page-container">

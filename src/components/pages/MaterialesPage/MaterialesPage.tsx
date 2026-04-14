@@ -7,7 +7,7 @@ import { FaBox, FaExclamationTriangle, FaHistory } from 'react-icons/fa';
 import '../../organisms/Charts/Charts.css';
 import './MaterialesPage.css';
 
-const API_URL = 'http://localhost:3000/bodega';
+const API_URL = 'http://localhost:3001/bodega';
 
 interface Material {
   codigo_material?: number;
@@ -68,37 +68,55 @@ export const MaterialesPage: React.FC = () => {
   const fetchMateriales = async () => {
     try {
       const res = await fetch(API_URL);
-      setMateriales(await res.json());
-    } catch (err) { console.error(err); }
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setMateriales(data);
+      } else {
+        console.warn("La API no devolvió un array:", data);
+        setMateriales([]);
+      }
+    } catch (err) { 
+      console.error("Error cargando materiales:", err); 
+      setMateriales([]);
+    }
   };
 
   const handleSubmit = async (data: Material) => {
     try {
-      if (editing?.codigo_material) {
-        await fetch(`${API_URL}/${editing.codigo_material}`, {
-          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-        });
-      } else {
-        await fetch(API_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-        });
-      }
+      const options = editing?.codigo_material 
+        ? { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }
+        : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) };
+      
+      const url = editing?.codigo_material ? `${API_URL}/${editing.codigo_material}` : API_URL;
+      
+      const response = await fetch(url, options);
+      if (!response.ok) throw new Error("Error en la operación");
+      
       await fetchMateriales();
       setIsModalOpen(false);
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+      console.error("Error al guardar material:", err);
+      alert("No se pudo guardar el material. Verifica la conexión.");
+    }
   };
 
   const handleDelete = async (m: Material) => {
     if (window.confirm('¿Eliminar este material?')) {
-      await fetch(`${API_URL}/${m.codigo_material}`, { method: 'DELETE' });
-      await fetchMateriales();
+      try {
+        await fetch(`${API_URL}/${m.codigo_material}`, { method: 'DELETE' });
+        await fetchMateriales();
+      } catch (err) {
+        console.error("Error al eliminar:", err);
+      }
     }
   };
 
-  const filtered = materiales.filter((m: Material) =>
-    (m.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (m.tipo || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filtered = Array.isArray(materiales) 
+    ? materiales.filter((m: Material) =>
+        (m.nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (m.tipo || '').toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   // Stats calculation
   const totalMateriales = materiales.length;
@@ -175,22 +193,30 @@ export const MaterialesPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filtered.map(m => (
-              <tr key={m.codigo_material}>
-                <td className="bold-text">{m.codigo_material}</td>
-                <td>{m.nombre}</td>
-                <td>
-                  <span className={`badge-cantidad ${Number(m.cantidad) > 10 ? 'alto' : Number(m.cantidad) > 0 ? 'medio' : 'bajo'}`}>
-                    {m.cantidad}
-                  </span>
-                </td>
-                <td>{m.tipo}</td>
-                <td style={{ textAlign: 'center' }}>
-                  <button className="btn-action-edit" onClick={() => { setEditing(m); setIsModalOpen(true); }}>Editar</button>
-                  <button className="btn-action-delete" onClick={() => handleDelete(m)}>Eliminar</button>
+            {filtered.length > 0 ? (
+              filtered.map(m => (
+                <tr key={m.codigo_material}>
+                  <td className="bold-text">{m.codigo_material}</td>
+                  <td>{m.nombre}</td>
+                  <td>
+                    <span className={`badge-cantidad ${Number(m.cantidad) > 10 ? 'alto' : Number(m.cantidad) > 0 ? 'medio' : 'bajo'}`}>
+                      {m.cantidad}
+                    </span>
+                  </td>
+                  <td>{m.tipo}</td>
+                  <td style={{ textAlign: 'center' }}>
+                    <button className="btn-action-edit" onClick={() => { setEditing(m); setIsModalOpen(true); }}>Editar</button>
+                    <button className="btn-action-delete" onClick={() => handleDelete(m)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', padding: '30px', color: '#999' }}>
+                  No se encontraron materiales.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

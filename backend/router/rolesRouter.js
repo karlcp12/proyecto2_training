@@ -23,21 +23,21 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { nombre } = req.body;
+    const { nombre_rol } = req.body;
     try {
-        const [result] = await pool.execute('INSERT INTO ROLES (NOMBRE) VALUES (?)', [nombre]);
-        res.status(201).json({ id: result.insertId, nombre, mensaje: 'Rol creado con éxito' });
+        const [result] = await pool.execute('INSERT INTO ROLES (NOMBRE_ROL) VALUES (?)', [nombre_rol]);
+        res.status(201).json({ id_rol: result.insertId, nombre_rol, mensaje: 'Rol creado con éxito' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
 router.put('/:id', async (req, res) => {
-    const { nombre } = req.body;
+    const { nombre_rol } = req.body;
     try {
-        const [result] = await pool.execute('UPDATE ROLES SET NOMBRE = ? WHERE ID_ROL = ?', [nombre, req.params.id]);
+        const [result] = await pool.execute('UPDATE ROLES SET NOMBRE_ROL = ? WHERE ID_ROL = ?', [nombre_rol, req.params.id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Rol no encontrado' });
-        res.status(200).json({ id: req.params.id, nombre, mensaje: 'Rol actualizado' });
+        res.status(200).json({ id_rol: req.params.id, nombre_rol, mensaje: 'Rol actualizado' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -47,7 +47,7 @@ router.delete('/:id', async (req, res) => {
     try {
         const [result] = await pool.execute('DELETE FROM ROLES WHERE ID_ROL = ?', [req.params.id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Rol no encontrado' });
-        res.status(200).json({ mensaje: 'Rol eliminado', id: req.params.id });
+        res.status(200).json({ mensaje: 'Rol eliminado', id_rol: req.params.id });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

@@ -14,6 +14,8 @@ import solicitudesRouter from './router/solicitudesRouter.js'
 import prestamosRouter from './router/prestamosRouter.js'
 import devolucionesRouter from './router/devolucionesRouter.js'
 import detallePrestamoRouter from './router/detallePrestamoRouter.js'
+import authRouter from './router/authRouter.js'
+import statsRouter from './router/statsRouter.js'
 
 const app = express();
 
@@ -24,7 +26,7 @@ app.use(cors())
 app.use('/aprendices', aprendizRouter)
 app.use('/usuarios', usuarioRouter)
 app.use('/instructores', instructorRouter)
-app.use('/centros', centrosRouter)
+app.use('/areas', centrosRouter)
 app.use('/roles', rolesRouter)
 app.use('/programas', programaRouter)
 app.use('/fichas', fichasRouter)
@@ -33,6 +35,8 @@ app.use('/solicitudes', solicitudesRouter)
 app.use('/prestamos', prestamosRouter)
 app.use('/devoluciones', devolucionesRouter)
 app.use('/detalle-prestamo', detallePrestamoRouter)
+app.use('/auth', authRouter)
+app.use('/stats', statsRouter)
 
-app.listen(3000)
-console.log('Servidor corriendo en el puerto 3000')
+app.listen(3001)
+console.log('Servidor corriendo en el puerto 3001')

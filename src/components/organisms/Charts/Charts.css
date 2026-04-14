@@ -41,9 +41,11 @@
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 15px;
   padding: 10px;
-  max-width: 1400px;
+  width: 100%;
+  max-width: calc(100% - 20px);
+  box-sizing: border-box;
   margin: 0 auto;
 }
 
@@ -80,6 +82,27 @@
   color: #2c3e50;
   border-bottom: 2px solid #f1f3f5;
   padding-bottom: 10px;
+}
+
+/* Responsive Grid Spans */
+.dashboard-card-large {
+  grid-column: span 3;
+}
+
+.dashboard-card-full {
+  grid-column: span 4;
+}
+
+@media (max-width: 1200px) {
+  .dashboard-card-large, .dashboard-card-full {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-card-large, .dashboard-card-full {
+    grid-column: span 1;
+  }
 }
 
 .dashboard-section-title {

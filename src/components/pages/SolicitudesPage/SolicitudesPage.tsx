@@ -3,16 +3,18 @@ import { Modal } from '../../molecules/Modal/Modal';
 import '../MaterialesPage/MaterialesPage.css';
 import './SolicitudesPage.css';
 
-const API_URL = 'http://localhost:3000/solicitudes';
-const MAT_URL = 'http://localhost:3000/bodega';
-const FICHAS_URL = 'http://localhost:3000/fichas';
+const API_URL = 'http://localhost:3001/solicitudes';
+const MAT_URL = 'http://localhost:3001/bodega';
+const FICHAS_URL = 'http://localhost:3001/fichas';
 
 interface Solicitud {
   id_solicitud?: number;
   id_aprendiz: string | number;
+  nombre_aprendiz?: string;
   codigo_material: string | number;
   nombre_material?: string;
   id_ficha: string | number;
+  numero_ficha?: string;
   cantidad: string | number;
   fecha?: string;
   estado: string;
@@ -70,8 +72,8 @@ const SolicitudForm: React.FC<{
           </select>
         </div>
         <div className="crud-form-group">
-          <label>ID Aprendiz</label>
-          <input name="id_aprendiz" value={form.id_aprendiz} onChange={handleChange} placeholder="ID del aprendiz" required />
+          <label>ID Usuario</label>
+          <input name="id_aprendiz" value={form.id_aprendiz} onChange={handleChange} placeholder="ID del Usuario" required />
         </div>
       </div>
 
@@ -192,8 +194,8 @@ export const SolicitudesPage: React.FC = () => {
               <tr key={s.id_solicitud}>
                 <td className="bold-text">{s.id_solicitud}</td>
                 <td>{s.nombre_material || `Cód. ${s.codigo_material}`}</td>
-                <td>#{s.id_ficha}</td>
-                <td>#{s.id_aprendiz}</td>
+                <td>{s.numero_ficha ? `#${s.numero_ficha}` : `ID ${s.id_ficha}`}</td>
+                <td>{s.nombre_aprendiz || `ID ${s.id_aprendiz}`}</td>
                 <td>{s.cantidad}</td>
                 <td>{fmtFecha(s.fecha)}</td>
                 <td style={{ textAlign: 'center' }}>

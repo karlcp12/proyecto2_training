@@ -14,61 +14,7 @@ interface Reporte {
   seleccionado: boolean;
 }
 
-const mockReportesValuo: Reporte[] = [
-  { numero: '00001', fecha: '2025-08-08', area: 'TICS', responsable: 'Katherine', seleccionado: true },
-  { numero: '00002', fecha: '2025-08-11', area: 'PAE', responsable: 'Jhan Breyner', seleccionado: false },
-];
-
-const mockReportesCompras: Reporte[] = [
-  { numero: '00001', fecha: '2025-09-05', area: 'Compras', responsable: 'Carlos Ruiz', seleccionado: true },
-  { numero: '00002', fecha: '2025-09-15', area: 'Logística', responsable: 'Ana Mora', seleccionado: false },
-];
-
-// Mock data for the detail view
-const mockDetalleReporte = {
-  infoGeneral: [
-    { campo: 'Número de reporte', valor: '00001' },
-    { campo: 'Fecha de generación', valor: '08/08/2025' },
-    { campo: 'Área responsable', valor: 'TICS' },
-    { campo: 'Responsable', valor: 'Katherine' },
-    { campo: 'Estado', valor: 'Activo' },
-  ],
-  articulosPrestados: [
-    { nombre: 'Laptop HP', cantidad: 2, estado: 'En uso', fecha: '01/08/2025' },
-    { nombre: 'Monitor', cantidad: 1, estado: 'En uso', fecha: '01/08/2025' },
-    { nombre: 'Teclado', cantidad: 3, estado: 'Disponible', fecha: '05/08/2025' },
-  ],
-  resumenBodega: [
-    { categoria: 'Electrónicos', total: 40, disponibles: 25, enUso: 15 },
-    { categoria: 'Mobiliario', total: 20, disponibles: 12, enUso: 8 },
-    { categoria: 'Herramientas', total: 30, disponibles: 20, enUso: 10 },
-  ],
-};
-
-// Mock data for charts
-const mockChartData = {
-  materialesMasUsados: [
-    { name: 'Laptop HP', quantity: 45 },
-    { name: 'Monitor 24', quantity: 30 },
-    { name: 'Silla Ergonómica', quantity: 25 },
-    { name: 'Teclado', quantity: 20 },
-    { name: 'Mouse', quantity: 15 },
-  ],
-  movimientosPorFecha: [
-    { date: '2026-04-07', count: 10 },
-    { date: '2026-04-08', count: 15 },
-    { date: '2026-04-09', count: 8 },
-    { date: '2026-04-10', count: 20 },
-    { date: '2026-04-11', count: 25 },
-    { date: '2026-04-12', count: 18 },
-    { date: '2026-04-13', count: 22 },
-  ],
-  distribucionSolicitudes: [
-    { name: 'Aprobado', value: 60 },
-    { name: 'Pendiente', value: 30 },
-    { name: 'Rechazado', value: 10 },
-  ]
-};
+const API_BASE = 'http://localhost:3001';
 
 type Vista = 'inicio' | 'tabla' | 'detalle' | 'graficas';
 type TipoReporte = 'valuo' | 'compras';
@@ -76,8 +22,12 @@ type TipoReporte = 'valuo' | 'compras';
 export const ReportesPage: React.FC = () => {
   const [vista, setVista] = useState<Vista>('inicio');
   const [tipoActivo, setTipoActivo] = useState<TipoReporte>('valuo');
+  const [reportes, setReportes] = useState<Reporte[]>([]);
   const [reporteDetalle, setReporteDetalle] = useState<Reporte | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [charts, setCharts] = useState<any>(null);
+  
+  const [loading, setLoading] = useState(false);
   
   // Filter states
   const [filterFechaInicio, setFilterFechaInicio] = useState('');
@@ -85,9 +35,25 @@ export const ReportesPage: React.FC = () => {
   const [filterTipoMaterial, setFilterTipoMaterial] = useState('Todos');
   const [filterArea, setFilterArea] = useState('Todas');
 
-  const reportesActuales = tipoActivo === 'valuo' ? mockReportesValuo : mockReportesCompras;
+  useEffect(() => {
+    if (vista === 'tabla') {
+       setLoading(true);
+       fetch(`${API_BASE}/stats/reportes`)
+         .then(r => r.json())
+         .then(data => {
+            setReportes(data);
+            setLoading(false);
+         })
+         .catch(() => setLoading(false));
+    }
+    if (vista === 'graficas') {
+       fetch(`${API_BASE}/stats/dashboard`)
+         .then(r => r.json())
+         .then(data => setCharts(data.charts));
+    }
+  }, [vista]);
 
-  const filteredReportes = reportesActuales.filter((r) =>
+  const filteredReportes = reportes.filter((r) =>
     r.numero.includes(searchTerm) ||
     r.responsable.toLowerCase().includes(searchTerm.toLowerCase()) ||
     r.area.toLowerCase().includes(searchTerm.toLowerCase())
@@ -215,20 +181,24 @@ export const ReportesPage: React.FC = () => {
 
         {/* Gráficas en Grid */}
         <div className="dashboard-grid" style={{ padding: 0 }}>
-          <div className="dashboard-card" style={{ gridColumn: 'span 2' }}>
-            <div className="dashboard-card-title">Materiales más utilizados</div>
-            <BarChartComponent data={mockChartData.materialesMasUsados} xKey="name" yKey="quantity" />
-          </div>
+          {charts && (
+            <>
+              <div className="dashboard-card" style={{ gridColumn: 'span 2' }}>
+                <div className="dashboard-card-title">Materiales más utilizados</div>
+                <BarChartComponent data={charts.topMaterials} xKey="name" yKey="quantity" />
+              </div>
 
-          <div className="dashboard-card">
-            <div className="dashboard-card-title">Distribución de Solicitudes</div>
-            <PieChartComponent data={mockChartData.distribucionSolicitudes} />
-          </div>
+              <div className="dashboard-card">
+                <div className="dashboard-card-title">Distribución de Solicitudes</div>
+                <PieChartComponent data={charts.statusDistribution} />
+              </div>
 
-          <div className="dashboard-card" style={{ gridColumn: 'span 3' }}>
-            <div className="dashboard-card-title">Movimientos (Entradas/Salidas) por fecha</div>
-            <LineChartComponent data={mockChartData.movimientosPorFecha} xKey="date" yKey="count" />
-          </div>
+              <div className="dashboard-card" style={{ gridColumn: 'span 3' }}>
+                <div className="dashboard-card-title">Movimientos (Entradas/Salidas) por fecha</div>
+                <LineChartComponent data={charts.movementHistory} xKey="date" yKey="count" />
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
@@ -322,12 +292,11 @@ export const ReportesPage: React.FC = () => {
         <h3 className="detalle-seccion-titulo">Información General</h3>
         <table className="detalle-tabla">
           <tbody>
-            {mockDetalleReporte.infoGeneral.map((fila, i) => (
-              <tr key={i}>
-                <td className="detalle-campo">{fila.campo}</td>
-                <td className="detalle-valor">{fila.valor}</td>
-              </tr>
-            ))}
+            <tr><td className="detalle-campo">Número de reporte</td><td className="detalle-valor">{reporteDetalle?.numero}</td></tr>
+            <tr><td className="detalle-campo">Fecha de generación</td><td className="detalle-valor">{reporteDetalle?.fecha ? new Date(reporteDetalle.fecha).toLocaleDateString() : '—'}</td></tr>
+            <tr><td className="detalle-campo">Área responsable</td><td className="detalle-valor">{reporteDetalle?.area}</td></tr>
+            <tr><td className="detalle-campo">Responsable</td><td className="detalle-valor">{reporteDetalle?.responsable}</td></tr>
+            <tr><td className="detalle-campo">Estado</td><td className="detalle-valor">{reporteDetalle?.estado}</td></tr>
           </tbody>
         </table>
       </div>

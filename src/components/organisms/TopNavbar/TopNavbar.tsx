@@ -1,9 +1,18 @@
-import { FaSearch, FaUserCircle } from "react-icons/fa";
+import { FaSearch, FaUserCircle, FaBars } from "react-icons/fa";
 import "./TopNavbar.css";
 
-export const TopNavbar = () => {
+interface TopNavbarProps {
+  onToggleSidebar: () => void;
+  isSidebarCollapsed: boolean;
+}
+
+export const TopNavbar: React.FC<TopNavbarProps> = ({ onToggleSidebar }) => {
   return (
     <header className="top-navbar">
+      <button className="sidebar-toggle-btn" onClick={onToggleSidebar}>
+        <FaBars />
+      </button>
+
       <div className="search-bar">
         <FaSearch className="search-icon" />
         <input type="text" placeholder="Search" className="search-input" />

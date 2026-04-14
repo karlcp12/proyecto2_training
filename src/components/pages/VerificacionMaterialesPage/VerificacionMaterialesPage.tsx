@@ -3,8 +3,8 @@ import { Modal } from '../../molecules/Modal/Modal';
 import '../MaterialesPage/MaterialesPage.css';
 import './VerificacionMaterialesPage.css';
 
-const API_URL = 'http://localhost:3000/bodega';
-const SOL_URL = 'http://localhost:3000/solicitudes';
+const API_URL = 'http://localhost:3001/bodega';
+const SOL_URL = 'http://localhost:3001/solicitudes';
 
 interface Material {
   codigo_material: number;

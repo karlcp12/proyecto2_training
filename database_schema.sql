@@ -1,0 +1,184 @@
+-- ==========================================
+-- Database Schema for: Sistema de Gestión y Trazabilidad de Materiales
+-- Target Environment: Laragon MySQL
+-- Database Name: fomacion
+-- ==========================================
+
+-- Create database
+CREATE DATABASE IF NOT EXISTS fomacion;
+USE fomacion;
+
+-- ---------------------------------------------------------
+-- Table: ROLES
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS ROLES (
+    ID_ROL INT AUTO_INCREMENT PRIMARY KEY,
+    NOMBRE_ROL VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: CENTROS
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS CENTROS (
+    ID_CENTRO INT AUTO_INCREMENT PRIMARY KEY,
+    NOMBRE_CENTRO VARCHAR(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: AREA
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS AREA (
+    ID_AREA INT AUTO_INCREMENT PRIMARY KEY,
+    NOMBRE_AREA VARCHAR(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: PROGRAMAS
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS PROGRAMAS (
+    ID_PROGRAMA INT AUTO_INCREMENT PRIMARY KEY,
+    CODIGO VARCHAR(20) NOT NULL UNIQUE,
+    NOMBRE_PROGRAMA VARCHAR(150) NOT NULL,
+    ID_CENTRO INT,
+    ESTADO ENUM('activo', 'inactivo') DEFAULT 'activo',
+    FOREIGN KEY (ID_CENTRO) REFERENCES CENTROS(ID_CENTRO) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: INSTRUCTORES
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS INSTRUCTORES (
+    ID_INSTRUCTOR INT AUTO_INCREMENT PRIMARY KEY,
+    NOMBRE VARCHAR(100) NOT NULL,
+    APELLIDO VARCHAR(100) NOT NULL,
+    ID_AREA INT,
+    FOREIGN KEY (ID_AREA) REFERENCES AREA(ID_AREA) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: FICHAS
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS FICHAS (
+    ID_FICHA INT AUTO_INCREMENT PRIMARY KEY,
+    NUMERO_FICHA VARCHAR(20) NOT NULL UNIQUE,
+    ID_PROGRAMA INT,
+    INSTRUCTOR_LIDER VARCHAR(200),
+    AMBIENTE VARCHAR(100),
+    JORNADA VARCHAR(50),
+    FECHA_INICIO DATE,
+    FECHA_FIN DATE,
+    ESTADO ENUM('activo', 'inactivo', 'terminado') DEFAULT 'activo',
+    FOREIGN KEY (ID_PROGRAMA) REFERENCES PROGRAMAS(ID_PROGRAMA) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: USUARIOS
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS USUARIOS (
+    ID_USUARIO INT AUTO_INCREMENT PRIMARY KEY,
+    NOMBRE VARCHAR(100) NOT NULL,
+    APELLIDOS VARCHAR(100) NOT NULL,
+    DOCUMENTO VARCHAR(20) UNIQUE NOT NULL,
+    EMAIL VARCHAR(150) UNIQUE NOT NULL,
+    PASSWORD VARCHAR(255) NOT NULL,
+    TELEFONO VARCHAR(20),
+    ID_ROL INT,
+    ESTADO ENUM('Activo', 'Inactivo') DEFAULT 'Activo',
+    FOREIGN KEY (ID_ROL) REFERENCES ROLES(ID_ROL) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: APRENDICES
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS APRENDICES (
+    ID_APRENDIZ INT AUTO_INCREMENT PRIMARY KEY,
+    NOMBRE VARCHAR(100) NOT NULL,
+    APELLIDO VARCHAR(100) NOT NULL,
+    DOCUMENTO VARCHAR(20) UNIQUE NOT NULL,
+    CORREO VARCHAR(150) UNIQUE NOT NULL,
+    DIRECCION VARCHAR(255),
+    TELEFONO VARCHAR(20),
+    ID_FICHA INT,
+    FOREIGN KEY (ID_FICHA) REFERENCES FICHAS(ID_FICHA) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: MATERIALES
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS MATERIALES (
+    CODIGO_MATERIAL INT AUTO_INCREMENT PRIMARY KEY,
+    NOMBRE VARCHAR(150) NOT NULL,
+    CANTIDAD INT DEFAULT 0,
+    TIPO VARCHAR(50)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: SOLICITUDES
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS SOLICITUDES (
+    ID_SOLICITUD INT AUTO_INCREMENT PRIMARY KEY,
+    ID_APRENDIZ INT,
+    CODIGO_MATERIAL INT,
+    ID_FICHA INT,
+    CANTIDAD INT NOT NULL,
+    FECHA DATE,
+    ESTADO VARCHAR(50) DEFAULT 'Pendiente',
+    FOREIGN KEY (ID_APRENDIZ) REFERENCES APRENDICES(ID_APRENDIZ) ON DELETE SET NULL,
+    FOREIGN KEY (CODIGO_MATERIAL) REFERENCES MATERIALES(CODIGO_MATERIAL) ON DELETE SET NULL,
+    FOREIGN KEY (ID_FICHA) REFERENCES FICHAS(ID_FICHA) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: PRESTAMOS
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS PRESTAMOS (
+    ID_PRESTAMO INT AUTO_INCREMENT PRIMARY KEY,
+    ID_SOLICITUD INT,
+    FECHA_PRESTAMO DATE,
+    FECHA_DEVOLUCION_ESPERADA DATE,
+    FECHA_DEVOLUCION_REAL DATE,
+    ENTREGADO_POR VARCHAR(200),
+    ID_RECIBIDO_POR INT,
+    ESTADO ENUM('activo', 'devuelto', 'atrasado') DEFAULT 'activo',
+    FOREIGN KEY (ID_SOLICITUD) REFERENCES SOLICITUDES(ID_SOLICITUD) ON DELETE SET NULL,
+    FOREIGN KEY (ID_RECIBIDO_POR) REFERENCES USUARIOS(ID_USUARIO) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: DETALLE_PRESTAMO
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS DETALLE_PRESTAMO (
+    ID_DETALLE_PRESTAMO INT AUTO_INCREMENT PRIMARY KEY,
+    ID_PRESTAMO INT,
+    ID_MATERIAL INT,
+    CANTIDAD_PRESTADA INT NOT NULL,
+    ESTADO_MATERIAL VARCHAR(100),
+    FOREIGN KEY (ID_PRESTAMO) REFERENCES PRESTAMOS(ID_PRESTAMO) ON DELETE CASCADE,
+    FOREIGN KEY (ID_MATERIAL) REFERENCES MATERIALES(CODIGO_MATERIAL) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Table: DEVOLUCIONES
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS DEVOLUCIONES (
+    ID_DEVOLUCION INT AUTO_INCREMENT PRIMARY KEY,
+    ID_PRESTAMO INT,
+    ID_USUARIO INT,
+    FECHA_DEVOLUCION DATE,
+    ESTADO_MATERIALES VARCHAR(255),
+    FOREIGN KEY (ID_PRESTAMO) REFERENCES PRESTAMOS(ID_PRESTAMO) ON DELETE CASCADE,
+    FOREIGN KEY (ID_USUARIO) REFERENCES USUARIOS(ID_USUARIO) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------
+-- Insert initial data
+-- ---------------------------------------------------------
+INSERT IGNORE INTO ROLES (ID_ROL, NOMBRE_ROL) VALUES (1, 'Administrador'), (2, 'Instructor'), (3, 'Aprendiz'), (4, 'Personal');
+
+INSERT IGNORE INTO CENTROS (ID_CENTRO, NOMBRE_CENTRO) VALUES (1, 'SENA YAMBORO');
+
+INSERT IGNORE INTO AREA (ID_AREA, NOMBRE_AREA) VALUES (1, 'TIC'), (2, 'AGRICOLA');
+
+-- Password is Admin123 (plain text for now as requested)
+INSERT IGNORE INTO USUARIOS (ID_USUARIO, NOMBRE, APELLIDOS, DOCUMENTO, EMAIL, PASSWORD, ID_ROL, ESTADO) 
+VALUES (1, 'Admin', 'SENA', '12345678', 'admin@sena.edu.co', 'Admin123', 1, 'Activo');

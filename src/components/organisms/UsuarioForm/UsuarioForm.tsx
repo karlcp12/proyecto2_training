@@ -8,6 +8,7 @@ export interface UsuarioData {
   telefono: string;
   documento: string;
   email: string;
+  password?: string;
   estado: "Activo" | "Inactivo";
 }
 
@@ -29,6 +30,7 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
     telefono: "",
     documento: "",
     email: "",
+    password: "",
     estado: "Activo",
   });
 
@@ -157,6 +159,8 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
           <input
             type="password"
             name="password"
+            value={formData.password || ""}
+            onChange={handleChange}
             placeholder={isEditing ? "Dejar en blanco para mantener" : "Contraseña"}
           />
         </div>

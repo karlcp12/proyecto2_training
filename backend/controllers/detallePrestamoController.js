@@ -1,47 +1,65 @@
-// Mock data for detalle_prestamo
-let detallePrestamo = [
-    { id_detalle_prestamo: 1, id_prestamo: 1, id_material: 1, cantidad_prestada: 5, estado_material: 'bueno' },
-    { id_detalle_prestamo: 2, id_prestamo: 2, id_material: 2, cantidad_prestada: 3, estado_material: 'regular' }
-];
+import { pool } from '../db.js';
 
-export const crearDetallePrestamo = (req, res) => {
+export const crearDetallePrestamo = async (req, res) => {
     const { id_prestamo, id_material, cantidad_prestada, estado_material } = req.body;
-    const newId = detallePrestamo.length > 0 ? Math.max(...detallePrestamo.map(d => d.id_detalle_prestamo)) + 1 : 1;
-    const newDetalle = { id_detalle_prestamo: newId, id_prestamo, id_material, cantidad_prestada, estado_material };
-    detallePrestamo.push(newDetalle);
-    res.status(201).json({ ...newDetalle, mensaje: 'Detalle de prestamo creado con éxito' });
-};
-
-export const obtenerDetallesPrestamo = (req, res) => {
-    res.status(200).json(detallePrestamo);
-};
-
-export const obtenerDetallePrestamoPorId = (req, res) => {
-    const { id } = req.params;
-    const detalle = detallePrestamo.find(d => d.id_detalle_prestamo == id);
-    if (!detalle) {
-        return res.status(404).json({ mensaje: 'Detalle de prestamo no encontrado' });
+    const query = 'INSERT INTO DETALLE_PRESTAMO (ID_PRESTAMO, ID_MATERIAL, CANTIDAD_PRESTADA, ESTADO_MATERIAL) VALUES (?, ?, ?, ?)';
+    try {
+        const [result] = await pool.execute(query, [id_prestamo, id_material, cantidad_prestada, estado_material]);
+        res.status(201).json({ id_detalle_prestamo: result.insertId, ...req.body, mensaje: 'Detalle de prestamo creado con éxito' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    res.status(200).json(detalle);
 };
 
-export const actualizarDetallePrestamo = (req, res) => {
+export const obtenerDetallesPrestamo = async (req, res) => {
+    const query = 'SELECT * FROM DETALLE_PRESTAMO';
+    try {
+        const [rows] = await pool.query(query);
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const obtenerDetallePrestamoPorId = async (req, res) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM DETALLE_PRESTAMO WHERE ID_DETALLE_PRESTAMO = ?';
+    try {
+        const [rows] = await pool.query(query, [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ mensaje: 'Detalle de prestamo no encontrado' });
+        }
+        res.status(200).json(rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const actualizarDetallePrestamo = async (req, res) => {
     const { id } = req.params;
     const { id_prestamo, id_material, cantidad_prestada, estado_material } = req.body;
-    const detalleIndex = detallePrestamo.findIndex(d => d.id_detalle_prestamo == id);
-    if (detalleIndex === -1) {
-        return res.status(404).json({ mensaje: 'Detalle de prestamo no encontrado' });
+    const query = 'UPDATE DETALLE_PRESTAMO SET ID_PRESTAMO = ?, ID_MATERIAL = ?, CANTIDAD_PRESTADA = ?, ESTADO_MATERIAL = ? WHERE ID_DETALLE_PRESTAMO = ?';
+    try {
+        const [result] = await pool.execute(query, [id_prestamo, id_material, cantidad_prestada, estado_material, id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ mensaje: 'Detalle de prestamo no encontrado' });
+        }
+        res.status(200).json({ id_detalle_prestamo: id, ...req.body, mensaje: 'Detalle de prestamo actualizado con éxito' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    detallePrestamo[detalleIndex] = { ...detallePrestamo[detalleIndex], id_prestamo, id_material, cantidad_prestada, estado_material };
-    res.status(200).json({ ...detallePrestamo[detalleIndex], mensaje: 'Detalle de prestamo actualizado con éxito' });
 };
 
-export const eliminarDetallePrestamo = (req, res) => {
+export const eliminarDetallePrestamo = async (req, res) => {
     const { id } = req.params;
-    const detalleIndex = detallePrestamo.findIndex(d => d.id_detalle_prestamo == id);
-    if (detalleIndex === -1) {
-        return res.status(404).json({ mensaje: 'Detalle de prestamo no encontrado' });
+    const query = 'DELETE FROM DETALLE_PRESTAMO WHERE ID_DETALLE_PRESTAMO = ?';
+    try {
+        const [result] = await pool.execute(query, [id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ mensaje: 'Detalle de prestamo no encontrado' });
+        }
+        res.status(200).json({ mensaje: 'Detalle de prestamo eliminado con éxito', id });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-    detallePrestamo.splice(detalleIndex, 1);
-    res.status(200).json({ mensaje: 'Detalle de prestamo eliminado con éxito', id });
-};
+};
