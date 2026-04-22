@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SummaryCard } from "../../organisms/Charts/SummaryCard";
 import { BarChartComponent } from "../../organisms/Charts/BarChartComponent";
 import { LineChartComponent } from "../../organisms/Charts/LineChartComponent";
@@ -45,7 +46,15 @@ export const MainMenuDefaultPage = () => {
     statusData: []
   });
 
+  const navigate = useNavigate();
+
   useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    if (currentUser.rol === 'Vocero') {
+        navigate('/app/solicitudes');
+        return;
+    }
+
     const fetchStats = async () => {
       try {
         const res = await fetch(`${API_BASE}/stats/dashboard`);

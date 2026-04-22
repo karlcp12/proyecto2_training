@@ -26,7 +26,7 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
   const [formData, setFormData] = useState<UsuarioData>({
     nombre: "",
     apellidos: "",
-    rol: "Usuario",
+    rol: "Vocero",
     telefono: "",
     documento: "",
     email: "",
@@ -63,13 +63,7 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Reconstruir nombre completo si es necesario para la vista original, 
-    // pero mantendremos la estructura para que UsuariosPage decida cómo mostrarlo.
-    const submitData = {
-      ...formData,
-      nombre: formData.apellidos ? `${formData.nombre} ${formData.apellidos}` : formData.nombre 
-    };
-    onSubmit(submitData);
+    onSubmit(formData);
   };
 
   return (
@@ -105,7 +99,8 @@ export const UsuarioForm: React.FC<UsuarioFormProps> = ({
           <label>Rol</label>
           <select name="rol" value={formData.rol} onChange={handleChange}>
             <option value="Administrador">Administrador</option>
-            <option value="Usuario">Usuario</option>
+            <option value="Instructor">Instructor</option>
+            <option value="Vocero">Vocero</option>
           </select>
         </div>
         <div className="usario-form-group">

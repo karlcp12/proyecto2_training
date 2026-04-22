@@ -8,7 +8,7 @@ const API_URL = 'http://localhost:3001/usuarios';
 
 // Extender UsuarioData para llevar el id del backend
 interface UsuarioConId extends UsuarioData {
-  id_usuarios?: number;
+  id_usuario?: number;
 }
 
 export const UsuariosPage: React.FC = () => {
@@ -48,7 +48,7 @@ export const UsuariosPage: React.FC = () => {
   const handleDelete = async (usuario: UsuarioConId) => {
     if (window.confirm("¿Está seguro que desea eliminar este usuario?")) {
       try {
-        await fetch(`${API_URL}/${usuario.id_usuarios}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/${usuario.id_usuario}`, { method: 'DELETE' });
         await fetchUsuarios();
       } catch (err) {
         console.error('Error al eliminar usuario:', err);
@@ -58,25 +58,27 @@ export const UsuariosPage: React.FC = () => {
 
   const handleSubmitForm = async (data: UsuarioData) => {
     try {
-      if (editingUsuario?.id_usuarios) {
-        // Editar
-        await fetch(`${API_URL}/${editingUsuario.id_usuarios}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-      } else {
-        // Crear nuevo
-        await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
+      const url = editingUsuario?.id_usuario ? `${API_URL}/${editingUsuario.id_usuario}` : API_URL;
+      const method = editingUsuario?.id_usuario ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || result.mensaje || 'Error en la operación');
       }
+
+      alert(editingUsuario ? 'Usuario actualizado con éxito' : 'Usuario creado con éxito');
       await fetchUsuarios();
       setIsModalOpen(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error al guardar usuario:', err);
+      alert(`Error: ${err.message}`);
     }
   };
 
@@ -119,7 +121,7 @@ export const UsuariosPage: React.FC = () => {
           </thead>
           <tbody>
             {filteredUsuarios.map((usuario) => (
-              <tr key={usuario.id_usuarios}>
+              <tr key={usuario.id_usuario}>
                 <td className="bold-text">{usuario.nombre}</td>
                 <td>{usuario.rol}</td>
                 <td>{usuario.telefono}</td>

@@ -5,6 +5,13 @@ export const crearMaterial = async (req, res) => {
     const query = 'INSERT INTO MATERIALES (NOMBRE, CANTIDAD, TIPO) VALUES (?, ?, ?)';
     try {
         const [result] = await pool.execute(query, [nombre, cantidad, tipo]);
+        
+        // Log movement
+        await pool.execute(
+            'INSERT INTO MOVIMIENTOS_MATERIAL (ID_MATERIAL, TIPO_MOVIMIENTO, CANTIDAD, MOTIVO) VALUES (?, ?, ?, ?)',
+            [result.insertId, 'Entrada', cantidad, 'Carga inicial / Compra']
+        );
+
         res.status(201).json({ codigo_material: result.insertId, nombre, cantidad, tipo, mensaje: 'Material creado con éxito' });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -38,8 +45,22 @@ export const actualizarMaterial = async (req, res) => {
     const { nombre, cantidad, tipo } = req.body;
     const query = 'UPDATE MATERIALES SET NOMBRE = ?, CANTIDAD = ?, TIPO = ? WHERE CODIGO_MATERIAL = ?';
     try {
+        // Get old quantity to determine if it's an entry or exit
+        const [oldRows] = await pool.query('SELECT CANTIDAD FROM MATERIALES WHERE CODIGO_MATERIAL = ?', [id]);
+        const oldCantidad = oldRows[0]?.CANTIDAD || 0;
+
         const [result] = await pool.execute(query, [nombre, cantidad, tipo, id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Material no encontrado' });
+        
+        // Log movement if quantity changed
+        if (oldCantidad !== parseInt(cantidad)) {
+            const diff = parseInt(cantidad) - oldCantidad;
+            await pool.execute(
+                'INSERT INTO MOVIMIENTOS_MATERIAL (ID_MATERIAL, TIPO_MOVIMIENTO, CANTIDAD, MOTIVO) VALUES (?, ?, ?, ?)',
+                [id, diff > 0 ? 'Entrada' : 'Salida', Math.abs(diff), 'Actualización manual de stock']
+            );
+        }
+
         res.status(200).json({ codigo_material: id, nombre, cantidad, tipo, mensaje: 'Material actualizado con éxito' });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -1,11 +1,13 @@
 .main-layout {
   display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
   height: 100vh;
   width: 100%;
   max-width: 100%;
   overflow: hidden;
   background-color: #f9fff8;
-  transition: all 0.3s ease;
 }
 
 /* Cuando el sidebar se contrae, el wrapper mantiene el flex:1 */
@@ -18,11 +20,21 @@
 
 .main-content {
   flex: 1;
-  padding: 2rem;
+  padding: 1.5rem;
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scroll */
   display: flex;
   flex-direction: column;
-  transition: padding 0.3s ease;
+  background-color: #f4f7f6;
+  scrollbar-width: thin;
+  scrollbar-color: #39a900 #f4f7f6;
+}
+
+/* Hide scrollbar for cleaner look but allow scrolling */
+.main-content::-webkit-scrollbar {
+  width: 0px !important;
+  height: 0px !important;
+  display: none !important;
 }
 
 /* Media queries para pantallas pequeñas */

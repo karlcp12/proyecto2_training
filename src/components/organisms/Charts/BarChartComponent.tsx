@@ -48,7 +48,7 @@ export const BarChartComponent: React.FC<BarChartProps> = ({
         <Tooltip />
         <Legend />
         <Bar dataKey={yKey} fill="#4caf50">
-          {data.map((entry, index) => (
+          {data.map((_, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
         </Bar>

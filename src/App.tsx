@@ -13,6 +13,7 @@ import { NotificacionesPage } from "./components/pages/NotificacionesPage/Notifi
 import { ActualizarStockPage } from "./components/pages/ActualizarStockPage/ActualizarStockPage";
 import { SolicitudesPage } from "./components/pages/SolicitudesPage/SolicitudesPage";
 import { VerificacionMaterialesPage } from "./components/pages/VerificacionMaterialesPage/VerificacionMaterialesPage";
+import { RoleGate } from "./components/auth/RoleGate";
 
 function App() {
   return (
@@ -24,15 +25,15 @@ function App() {
         
         <Route path="/app" element={<MainLayout />}>
           <Route index element={<MainMenuDefaultPage />} />
-          <Route path="materiales" element={<MaterialesPage />} />
-          <Route path="areas" element={<AreasPage />} />
-          <Route path="fichas" element={<FichasPage />} />
-          <Route path="usuarios" element={<UsuariosPage />} />
-          <Route path="reportes" element={<ReportesPage />} />
-          <Route path="notificaciones" element={<NotificacionesPage />} />
-          <Route path="actualizar-stock" element={<ActualizarStockPage />} />
+          <Route path="materiales" element={<RoleGate allowedRoles={['Administrador', 'Instructor']}><MaterialesPage /></RoleGate>} />
+          <Route path="areas" element={<RoleGate allowedRoles={['Administrador', 'Instructor']}><AreasPage /></RoleGate>} />
+          <Route path="fichas" element={<RoleGate allowedRoles={['Administrador', 'Instructor']}><FichasPage /></RoleGate>} />
+          <Route path="usuarios" element={<RoleGate allowedRoles={['Administrador', 'Instructor']}><UsuariosPage /></RoleGate>} />
+          <Route path="reportes" element={<RoleGate allowedRoles={['Administrador', 'Instructor']}><ReportesPage /></RoleGate>} />
+          <Route path="notificaciones" element={<RoleGate allowedRoles={['Administrador', 'Instructor']}><NotificacionesPage /></RoleGate>} />
+          <Route path="actualizar-stock" element={<RoleGate allowedRoles={['Administrador', 'Instructor']}><ActualizarStockPage /></RoleGate>} />
           <Route path="solicitudes" element={<SolicitudesPage />} />
-          <Route path="verificacion" element={<VerificacionMaterialesPage />} />
+          <Route path="verificacion" element={<RoleGate allowedRoles={['Administrador', 'Instructor']}><VerificacionMaterialesPage /></RoleGate>} />
         </Route>
       </Routes>
 

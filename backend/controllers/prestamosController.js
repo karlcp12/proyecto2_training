@@ -5,6 +5,21 @@ export const crearPrestamo = async (req, res) => {
     const query = 'INSERT INTO PRESTAMOS (ID_SOLICITUD, FECHA_PRESTAMO, FECHA_DEVOLUCION_ESPERADA, FECHA_DEVOLUCION_REAL, ENTREGADO_POR, ID_RECIBIDO_POR, ESTADO) VALUES (?, ?, ?, ?, ?, ?, ?)';
     try {
         const [result] = await pool.execute(query, [id_solicitud, fecha_prestamo, fecha_devolucion_esperada, fecha_devolucion_real, entregado_por, id_recibido_por, estado || 'activo']);
+        
+        // Log movement (Salida)
+        // First get the material and quantity from the solicitud
+        const [solRows] = await pool.query('SELECT CODIGO_MATERIAL, CANTIDAD FROM SOLICITUDES WHERE ID_SOLICITUD = ?', [id_solicitud]);
+        if (solRows.length > 0) {
+            const { CODIGO_MATERIAL, CANTIDAD } = solRows[0];
+            await pool.execute(
+                'INSERT INTO MOVIMIENTOS_MATERIAL (ID_MATERIAL, TIPO_MOVIMIENTO, CANTIDAD, MOTIVO) VALUES (?, ?, ?, ?)',
+                [CODIGO_MATERIAL, 'Salida', CANTIDAD, `Préstamo #${result.insertId}`]
+            );
+            
+            // Optionally update stock (decrementar)
+            await pool.execute('UPDATE MATERIALES SET CANTIDAD = CANTIDAD - ? WHERE CODIGO_MATERIAL = ?', [CANTIDAD, CODIGO_MATERIAL]);
+        }
+
         res.status(201).json({ id_prestamo: result.insertId, ...req.body, mensaje: 'Prestamo creado con éxito' });
     } catch (error) {
         res.status(500).json({ error: error.message });

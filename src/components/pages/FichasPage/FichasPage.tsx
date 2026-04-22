@@ -25,7 +25,7 @@ const emptyFicha: Ficha = {
 };
 
 interface Area { id_area: number; nombre_area: string; }
-interface Programa { id_programa: number; nombre_programa: string; id_centro: number; }
+interface Programa { id_programa: number; nombre_programa: string; id_area: number; }
 
 const FichaForm: React.FC<{
   initial?: Ficha;

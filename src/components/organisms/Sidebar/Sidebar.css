@@ -1,5 +1,5 @@
 .sidebar {
-  width: 250px;
+  width: 280px;
   background-color: #ffffff;
   border-right: 1px solid #e0e0e0;
   display: flex;
@@ -27,9 +27,17 @@
   flex: 1;
   padding: 1rem 0;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  scrollbar-width: none;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 0px !important;
+  height: 0px !important;
+  display: none !important;
 }
 
 .nav-item {
@@ -46,7 +54,7 @@
   width: 100%;
   cursor: pointer;
   text-transform: uppercase;
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .sidebar.collapsed .nav-item {

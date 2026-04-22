@@ -165,6 +165,20 @@ CREATE TABLE IF NOT EXISTS DEVOLUCIONES (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------
+-- Table: MOVIMIENTOS_MATERIAL
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS MOVIMIENTOS_MATERIAL (
+    ID_MOVIMIENTO INT AUTO_INCREMENT PRIMARY KEY,
+    ID_MATERIAL INT,
+    TIPO_MOVIMIENTO ENUM('Entrada', 'Salida') NOT NULL,
+    CANTIDAD INT NOT NULL,
+    FECHA TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    MOTIVO VARCHAR(255),
+    ID_USUARIO INT,
+    FOREIGN KEY (ID_MATERIAL) REFERENCES MATERIALES(CODIGO_MATERIAL) ON DELETE CASCADE,
+    FOREIGN KEY (ID_USUARIO) REFERENCES USUARIOS(ID_USUARIO) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Insert initial data
 -- ---------------------------------------------------------
 INSERT IGNORE INTO ROLES (ID_ROL, NOMBRE_ROL) VALUES (1, 'Administrador'), (2, 'Instructor'), (3, 'Aprendiz'), (4, 'Personal');

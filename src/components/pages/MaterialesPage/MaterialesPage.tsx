@@ -63,6 +63,9 @@ export const MaterialesPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<Material | null>(null);
 
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const isVocero = currentUser.rol === 'Vocero';
+
   useEffect(() => { fetchMateriales(); }, []);
 
   const fetchMateriales = async () => {
@@ -175,9 +178,11 @@ export const MaterialesPage: React.FC = () => {
               value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="btn-add-crud" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
-            Añadir Material
-          </button>
+          {!isVocero && (
+            <button className="btn-add-crud" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
+                Añadir Material
+            </button>
+          )}
         </div>
       </div>
 
@@ -205,8 +210,14 @@ export const MaterialesPage: React.FC = () => {
                   </td>
                   <td>{m.tipo}</td>
                   <td style={{ textAlign: 'center' }}>
-                    <button className="btn-action-edit" onClick={() => { setEditing(m); setIsModalOpen(true); }}>Editar</button>
-                    <button className="btn-action-delete" onClick={() => handleDelete(m)}>Eliminar</button>
+                    {!isVocero ? (
+                      <>
+                        <button className="btn-action-edit" onClick={() => { setEditing(m); setIsModalOpen(true); }}>Editar</button>
+                        <button className="btn-action-delete" onClick={() => handleDelete(m)}>Eliminar</button>
+                      </>
+                    ) : (
+                      <span className="no-actions">Sin permisos</span>
+                    )}
                   </td>
                 </tr>
               ))

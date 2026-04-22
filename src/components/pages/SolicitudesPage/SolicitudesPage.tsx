@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Modal } from '../../molecules/Modal/Modal';
+import { FaFileAlt, FaClock, FaCheckCircle, FaTimesCircle, FaPlus } from 'react-icons/fa';
 import '../MaterialesPage/MaterialesPage.css';
 import './SolicitudesPage.css';
 
@@ -9,8 +10,8 @@ const FICHAS_URL = 'http://localhost:3001/fichas';
 
 interface Solicitud {
   id_solicitud?: number;
-  id_aprendiz: string | number;
-  nombre_aprendiz?: string;
+  id_usuario: string | number;
+  nombre_usuario?: string;
   codigo_material: string | number;
   nombre_material?: string;
   id_ficha: string | number;
@@ -18,19 +19,30 @@ interface Solicitud {
   cantidad: string | number;
   fecha?: string;
   estado: string;
+  id_instructor?: string | number;
+  nombre_instructor?: string;
 }
 
 interface Material { codigo_material: number; nombre: string; }
 interface Ficha { id_ficha: number; numero_ficha: string; }
+interface Usuario { id_usuario: number; nombre: string; apellidos: string; rol: string; }
 
 const SolicitudForm: React.FC<{
   initial?: Solicitud;
   isEditing: boolean;
   materiales: Material[];
   fichas: Ficha[];
+  usuarios: Usuario[];
   onSubmit: (data: Solicitud) => void;
-}> = ({ initial, isEditing, materiales, fichas, onSubmit }) => {
-  const empty: Solicitud = { id_aprendiz: '', codigo_material: '', id_ficha: '', cantidad: 1, estado: 'Pendiente' };
+  currentUser: any;
+}> = ({ initial, isEditing, materiales, fichas, usuarios, onSubmit, currentUser }) => {
+  const empty: Solicitud = { 
+    id_usuario: currentUser?.id || '', 
+    codigo_material: '', 
+    id_ficha: '', 
+    cantidad: 1, 
+    estado: 'Pendiente' 
+  };
   const [form, setForm] = useState<Solicitud>(initial || empty);
 
   useEffect(() => { setForm(initial || empty); }, [initial]);
@@ -72,8 +84,38 @@ const SolicitudForm: React.FC<{
           </select>
         </div>
         <div className="crud-form-group">
-          <label>ID Usuario</label>
-          <input name="id_aprendiz" value={form.id_aprendiz} onChange={handleChange} placeholder="ID del Usuario" required />
+          <label>Solicitante (Vocero)</label>
+          <select 
+            name="id_usuario" 
+            value={form.id_usuario} 
+            onChange={handleChange} 
+            required 
+            disabled={currentUser?.rol === 'Vocero'}
+          >
+            <option value="">— Seleccionar Vocero —</option>
+            {usuarios.filter(u => u.rol === 'Vocero').map(u => (
+              <option key={u.id_usuario} value={u.id_usuario}>{u.nombre} {u.apellidos}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="sol-section-label">Autorización (Instructor)</div>
+      <div className="crud-form-grid">
+        <div className="crud-form-group">
+          <label>Instructor Responsable</label>
+          <select 
+            name="id_instructor" 
+            value={form.id_instructor || ''} 
+            onChange={handleChange}
+            required={currentUser?.rol === 'Vocero'}
+            disabled={currentUser?.rol === 'Instructor' && !isEditing}
+          >
+            <option value="">— Seleccionar Instructor —</option>
+            {usuarios.filter(u => u.rol === 'Instructor').map(u => (
+              <option key={u.id_usuario} value={u.id_usuario}>{u.nombre} {u.apellidos}</option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -111,15 +153,29 @@ export const SolicitudesPage: React.FC = () => {
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
   const [materiales, setMateriales] = useState<Material[]>([]);
   const [fichas, setFichas] = useState<Ficha[]>([]);
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('Todas');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<Solicitud | null>(null);
+
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
     fetchSolicitudes();
     fetch(MAT_URL).then(r => r.json()).then(setMateriales).catch(() => {});
     fetch(FICHAS_URL).then(r => r.json()).then(setFichas).catch(() => {});
+    fetch('http://localhost:3001/usuarios').then(r => r.json()).then(setUsuarios).catch(() => {});
   }, []);
+
+  const stats = useMemo(() => {
+    return {
+        total: solicitudes.length,
+        pendientes: solicitudes.filter(s => s.estado === 'Pendiente').length,
+        aprobadas: solicitudes.filter(s => s.estado === 'Aprobada').length,
+        rechazadas: solicitudes.filter(s => s.estado === 'Rechazada').length
+    };
+  }, [solicitudes]);
 
   const fetchSolicitudes = async () => {
     try { setSolicitudes(await (await fetch(API_URL)).json()); }
@@ -128,18 +184,27 @@ export const SolicitudesPage: React.FC = () => {
 
   const handleSubmit = async (data: Solicitud) => {
     try {
-      if (editing?.id_solicitud) {
-        await fetch(`${API_URL}/${editing.id_solicitud}`, {
-          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-        });
-      } else {
-        await fetch(API_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-        });
+      const url = editing?.id_solicitud ? `${API_URL}/${editing.id_solicitud}` : API_URL;
+      const method = editing?.id_solicitud ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method, 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Error en la petición');
       }
+
       await fetchSolicitudes();
       setIsModalOpen(false);
-    } catch (err) { console.error(err); }
+      alert(editing ? 'Solicitud actualizada' : 'Solicitud creada con éxito');
+    } catch (err: any) { 
+        console.error(err);
+        alert(`Error: ${err.message}`);
+    }
   };
 
   const handleDelete = async (s: Solicitud) => {
@@ -149,66 +214,134 @@ export const SolicitudesPage: React.FC = () => {
     }
   };
 
-  const filtered = solicitudes.filter(s =>
-    String(s.id_solicitud || '').includes(searchTerm) ||
-    (s.nombre_material || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (s.estado || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filtered = useMemo(() => solicitudes.filter(s => {
+    const matchesSearch = String(s.id_solicitud || '').includes(searchTerm) ||
+        (s.nombre_material || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (s.nombre_usuario || '').toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = filterStatus === 'Todas' || s.estado === filterStatus;
+    
+    return matchesSearch && matchesStatus;
+  }), [solicitudes, searchTerm, filterStatus]);
 
   const fmtFecha = (d?: string) => d ? new Date(d).toLocaleDateString('es-CO') : '—';
 
   return (
-    <div className="crud-page-container">
-      <div className="crud-header-actions">
-        <h2>SOLICITUDES</h2>
-        <div className="crud-actions-right">
-          <div className="crud-search-bar">
-            <span>🔍</span>
-            <input type="text" placeholder="Search" className="crud-search-input"
-              value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
-          </div>
-          <button className="btn-add-crud" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
-            Nueva Solicitud
-          </button>
+    <div className="solicitudes-page-container">
+      <div className="solicitudes-header">
+        <h1>GESTIÓN DE SOLICITUDES</h1>
+        <p>Monitorea y aprueba las peticiones de materiales de los aprendices</p>
+      </div>
+
+      {/* Stats Section */}
+      <div className="sol-stats-grid">
+        <div className="sol-stat-card total">
+            <div className="stat-icon"><FaFileAlt /></div>
+            <div className="stat-info">
+                <span className="stat-value">{stats.total}</span>
+                <span className="stat-label">Total Solicitudes</span>
+            </div>
+        </div>
+        <div className="sol-stat-card pendiente">
+            <div className="stat-icon"><FaClock /></div>
+            <div className="stat-info">
+                <span className="stat-value">{stats.pendientes}</span>
+                <span className="stat-label">Pendientes</span>
+            </div>
+        </div>
+        <div className="sol-stat-card aprobada">
+            <div className="stat-icon"><FaCheckCircle /></div>
+            <div className="stat-info">
+                <span className="stat-value">{stats.aprobadas}</span>
+                <span className="stat-label">Aprobadas</span>
+            </div>
+        </div>
+        <div className="sol-stat-card rechazada">
+            <div className="stat-icon"><FaTimesCircle /></div>
+            <div className="stat-info">
+                <span className="stat-value">{stats.rechazadas}</span>
+                <span className="stat-label">Rechazadas</span>
+            </div>
         </div>
       </div>
 
-      <div className="sol-section-label" style={{ marginBottom: '12px' }}>Solicitudes de los Users</div>
+      <div className="sol-content-card">
+        <div className="sol-toolbar">
+            <div className="sol-filters">
+                {['Todas', 'Pendiente', 'Aprobada', 'Rechazada'].map(status => (
+                    <button 
+                        key={status}
+                        className={`filter-tab ${filterStatus === status ? 'active' : ''}`}
+                        onClick={() => setFilterStatus(status)}
+                    >
+                        {status}
+                    </button>
+                ))}
+            </div>
+            <div className="sol-actions">
+                <div className="sol-search">
+                    <input 
+                        type="text" 
+                        placeholder="Buscar por ID, material o aprendiz..." 
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <button className="btn-new-sol" onClick={() => { setEditing(null); setIsModalOpen(true); }}>
+                    <FaPlus /> Nueva Solicitud
+                </button>
+            </div>
+        </div>
 
-      <div className="crud-table-wrapper">
-        <table className="crud-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Material</th>
-              <th>Ficha</th>
-              <th>Aprendiz</th>
-              <th>Cantidad</th>
-              <th>Fecha</th>
-              <th style={{ textAlign: 'center' }}>Estado</th>
-              <th style={{ textAlign: 'center' }}>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map(s => (
-              <tr key={s.id_solicitud}>
-                <td className="bold-text">{s.id_solicitud}</td>
-                <td>{s.nombre_material || `Cód. ${s.codigo_material}`}</td>
-                <td>{s.numero_ficha ? `#${s.numero_ficha}` : `ID ${s.id_ficha}`}</td>
-                <td>{s.nombre_aprendiz || `ID ${s.id_aprendiz}`}</td>
-                <td>{s.cantidad}</td>
-                <td>{fmtFecha(s.fecha)}</td>
-                <td style={{ textAlign: 'center' }}>
-                  <span className={estadoBadgeClass(s.estado)}>{s.estado}</span>
-                </td>
-                <td style={{ textAlign: 'center' }}>
-                  <button className="btn-action-edit" onClick={() => { setEditing(s); setIsModalOpen(true); }}>Editar</button>
-                  <button className="btn-action-delete" onClick={() => handleDelete(s)}>Eliminar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="sol-table-wrapper">
+            <table className="sol-table">
+                <thead>
+                    <tr>
+                        <th># ID</th>
+                        <th>Material</th>
+                        <th>Ficha</th>
+                        <th>Solicitante</th>
+                        <th>Instructor</th>
+                        <th>Cant.</th>
+                        <th>Fecha</th>
+                        <th style={{ textAlign: 'center' }}>Estado</th>
+                        <th style={{ textAlign: 'center' }}>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filtered.map(s => (
+                        <tr key={s.id_solicitud}>
+                            <td className="bold-id">#{s.id_solicitud}</td>
+                            <td>
+                                <div className="cell-material">
+                                    <span className="mat-name">{s.nombre_material || 'Material Desconocido'}</span>
+                                    <span className="mat-code">Cód: {s.codigo_material}</span>
+                                </div>
+                            </td>
+                            <td><span className="ficha-tag">#{s.numero_ficha || s.id_ficha}</span></td>
+                            <td>{s.nombre_usuario || `User ID: ${s.id_usuario}`}</td>
+                            <td><span className="inst-name">{s.nombre_instructor || 'Pendiente'}</span></td>
+                            <td><span className="qty-val">{s.cantidad}</span></td>
+                            <td>{fmtFecha(s.fecha)}</td>
+                            <td style={{ textAlign: 'center' }}>
+                                <span className={estadoBadgeClass(s.estado)}>{s.estado}</span>
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                                <div className="table-actions">
+                                    <button className="btn-edit-sol" onClick={() => { setEditing(s); setIsModalOpen(true); }}>Editar</button>
+                                    <button className="btn-delete-sol" onClick={() => handleDelete(s)}>Eliminar</button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                    {filtered.length === 0 && (
+                        <tr>
+                            <td colSpan={8} className="no-data">No se encontraron solicitudes</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
       </div>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -217,7 +350,9 @@ export const SolicitudesPage: React.FC = () => {
           isEditing={editing !== null}
           materiales={materiales}
           fichas={fichas}
+          usuarios={usuarios}
           onSubmit={handleSubmit}
+          currentUser={currentUser}
         />
       </Modal>
     </div>

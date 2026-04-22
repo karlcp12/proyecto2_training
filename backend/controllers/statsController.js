@@ -58,7 +58,7 @@ export const getReportesData = async (req, res) => {
             LEFT JOIN FICHAS f ON s.ID_FICHA = f.ID_FICHA
             LEFT JOIN PROGRAMAS p ON f.ID_PROGRAMA = p.ID_PROGRAMA
             LEFT JOIN AREA a ON p.ID_CENTRO = a.ID_AREA
-            LEFT JOIN USUARIOS u ON s.ID_APRENDIZ = u.ID_USUARIO
+            LEFT JOIN USUARIOS u ON s.ID_USUARIO = u.ID_USUARIO
         `;
         const [rows] = await pool.query(query);
         res.status(200).json(rows);
@@ -98,3 +98,43 @@ export const getAlertas = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+
+export const getMovimientosReport = async (req, res) => {
+    try {
+        const query = `
+            SELECT m.ID_MOVIMIENTO as id, mat.NOMBRE as material, 
+                   m.TIPO_MOVIMIENTO as tipo, m.CANTIDAD as cantidad, 
+                   m.FECHA as fecha, m.MOTIVO as motivo,
+                   u.NOMBRE as usuario
+            FROM MOVIMIENTOS_MATERIAL m
+            JOIN MATERIALES mat ON m.ID_MATERIAL = mat.CODIGO_MATERIAL
+            LEFT JOIN USUARIOS u ON m.ID_USUARIO = u.ID_USUARIO
+            ORDER BY m.FECHA DESC
+        `;
+        const [rows] = await pool.query(query);
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const getMaterialsPDFData = async (req, res) => {
+    const { ids } = req.query; // Expecting comma-separated ids
+    try {
+        let query = `
+            SELECT CODIGO_MATERIAL as codigo, NOMBRE as nombre, 
+                   CANTIDAD as cantidad, TIPO as tipo 
+            FROM MATERIALES
+        `;
+        
+        if (ids && ids !== 'all') {
+            const idList = ids.split(',').map(id => parseInt(id));
+            query += ` WHERE CODIGO_MATERIAL IN (${idList.join(',')})`;
+        }
+
+        const [rows] = await pool.query(query);
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

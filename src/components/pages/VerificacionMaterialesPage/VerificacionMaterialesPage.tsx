@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from '../../molecules/Modal/Modal';
 import '../MaterialesPage/MaterialesPage.css';
 import './VerificacionMaterialesPage.css';
 
