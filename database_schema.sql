@@ -1,9 +1,3 @@
--- ==========================================
--- Database Schema for: Sistema de Gestión y Trazabilidad de Materiales
--- Target Environment: Laragon MySQL
--- Database Name: fomacion
--- ==========================================
-
 -- Create database
 CREATE DATABASE IF NOT EXISTS fomacion;
 USE fomacion;
