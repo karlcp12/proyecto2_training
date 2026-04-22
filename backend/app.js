@@ -1,7 +1,7 @@
 // app.js (Fragmento actualizado)
 import express from 'express'
 import cors from 'cors'
-// importaciones
+// importaciones 
 import aprendizRouter from './router/aprendizRouter.js'
 import usuarioRouter from './router/usuariosRouter.js'
 import instructorRouter from './router/instructorRouter.js'
@@ -15,6 +15,7 @@ import prestamosRouter from './router/prestamosRouter.js'
 import areaMaterialesRouter from './router/areaMaterialesRouter.js'
 import devolucionesRouter from './router/devolucionesRouter.js'
 import detallePrestamoRouter from './router/detallePrestamoRouter.js'
+import statsRouter from './router/statsRouter.js'
 
 const app = express();
 
@@ -30,7 +31,7 @@ app.use(authMiddleware);
 app.use('/aprendices', aprendizRouter)
 app.use('/instructores', instructorRouter)
 app.use('/centros', centrosRouter)
-app.use('/centros', areaMaterialesRouter) 
+app.use('/centros', areaMaterialesRouter)
 app.use('/roles', rolesRouter)
 app.use('/programas', programaRouter)
 app.use('/fichas', fichasRouter)
@@ -39,6 +40,8 @@ app.use('/solicitudes', solicitudesRouter)
 app.use('/prestamos', prestamosRouter)
 app.use('/devoluciones', devolucionesRouter)
 app.use('/detalle-prestamo', detallePrestamoRouter)
+app.use('/stats', statsRouter)
 
-app.listen(3000)
-console.log('Servidor corriendo en el puerto 3000')
+
+app.listen(3001)
+console.log('Servidor corriendo en el puerto 3001')

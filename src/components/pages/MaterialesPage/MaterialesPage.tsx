@@ -3,8 +3,8 @@ import { Modal } from '../../molecules/Modal/Modal';
 import { FaPlus, FaSearch } from 'react-icons/fa';
 import './MaterialesPage.css';
 
-const API_URL = 'http://localhost:3000/bodega';
-const AREAS_URL = 'http://localhost:3000/centros';
+const API_URL = 'http://localhost:3001/bodega';
+const AREAS_URL = 'http://localhost:3001/centros';
 
 interface Material {
   codigo_material?: number;

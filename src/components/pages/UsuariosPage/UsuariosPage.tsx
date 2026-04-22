@@ -5,7 +5,7 @@ import type { UsuarioData } from '../../organisms/UsuarioForm/UsuarioForm';
 import { FaSearch, FaPlus } from 'react-icons/fa';
 import './UsuariosPage.css';
 
-const API_URL = 'http://localhost:3000/usuarios';
+const API_URL = 'http://localhost:3001/usuarios';
 
 
 interface UsuarioConId extends UsuarioData {

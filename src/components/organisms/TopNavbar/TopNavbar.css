@@ -6,6 +6,7 @@
   justify-content: flex-end;
   /* Alineamos a la derecha */
   align-items: center;
+  gap: 40px;
   padding: 0 2rem;
   color: white;
   margin: 10px 20px 0 20px;
@@ -34,6 +35,34 @@
   outline: none;
   width: 100%;
   color: #333;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.notification-bell {
+  width: 45px;
+  height: 45px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #7a8c9e;
+  text-decoration: none;
+  font-size: 1.15rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.notification-bell:hover {
+  color: #39A900;
+  background-color: #f1f5f9;
+  transform: scale(1.1);
 }
 
 .user-profile {

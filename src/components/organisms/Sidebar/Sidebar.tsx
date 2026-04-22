@@ -43,6 +43,11 @@ export const Sidebar = () => {
       </div>
 
       <nav className="sidebar-nav">
+        {/* Dashboard Módulo Especial */}
+        <NavLink to="/app/dashboard" className="nav-item flat-link" style={{ marginBottom: '10px' }}>
+          <FaChartLine className="nav-icon" /> <span className="nav-text">DASHBOARD</span>
+        </NavLink>
+
         {/* Gestión Dropdown */}
         <div className="nav-group">
           <button
@@ -63,6 +68,9 @@ export const Sidebar = () => {
             <NavLink to="/app/fichas" className="submenu-item">
               <FaGraduationCap className="submenu-icon" /> <span className="submenu-text">Fichas</span>
             </NavLink>
+            <NavLink to="/app/aprendices" className="submenu-item">
+              <FaUser className="submenu-icon" /> <span className="submenu-text">Aprendices</span>
+            </NavLink>
           </div>
         </div>
 
@@ -72,9 +80,6 @@ export const Sidebar = () => {
         </NavLink>
         <NavLink to="/app/reportes" className="nav-item flat-link">
           <FaChartLine className="nav-icon" /> <span className="nav-text">REPORTES</span>
-        </NavLink>
-        <NavLink to="/app/notificaciones" className="nav-item flat-link">
-          <FaBell className="nav-icon" /> <span className="nav-text">NOTIFICACIONES</span>
         </NavLink>
         <NavLink to="/app/actualizar-stock" className="nav-item flat-link">
           <FaWarehouse className="nav-icon" /> <span className="nav-text">ACTUALIZAR STOCK</span>

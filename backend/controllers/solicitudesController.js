@@ -2,7 +2,7 @@ import { pool } from '../db.js';
 
 export const crearSolicitud = async (req, res) => {
     const { id_aprendiz, codigo_material, id_ficha, cantidad, fecha, estado } = req.body;
-    const query = 'INSERT INTO SOLICITUDES (ID_APRENDIZ, CODIGO_MATERIAL, ID_FICHA, CANTIDAD, FECHA, ESTADO) VALUES (?,?,?,?,?,?)';
+    const query = 'INSERT INTO solicitudes (ID_Aprendiz, Codigo_Material, ID_Ficha, Cantidad, Fecha_Solicitud, Estado) VALUES (?,?,?,?,?,?)';
     try {
         const [result] = await pool.execute(query, [id_aprendiz, codigo_material, id_ficha, cantidad, fecha || new Date().toISOString().split('T')[0], estado || 'Pendiente']);
         res.status(201).json({ id_solicitud: result.insertId, ...req.body, mensaje: 'Solicitud creada con éxito' });
@@ -12,12 +12,12 @@ export const crearSolicitud = async (req, res) => {
 };
 
 export const obtenerSolicitudes = async (req, res) => {
-    const query = `SELECT s.ID_SOLICITUD as id_solicitud, s.ID_APRENDIZ as id_aprendiz,
-        s.CODIGO_MATERIAL as codigo_material, m.NOMBRE as nombre_material,
-        s.ID_FICHA as id_ficha, s.CANTIDAD as cantidad,
-        s.FECHA as fecha, s.ESTADO as estado
-        FROM SOLICITUDES s
-        LEFT JOIN MATERIALES m ON s.CODIGO_MATERIAL = m.CODIGO_MATERIAL`;
+    const query = `SELECT s.ID_Solicitud as id_solicitud, s.ID_Aprendiz as id_aprendiz,
+        s.Codigo_Material as codigo_material, m.Nombre_Material as nombre_material,
+        s.ID_Ficha as id_ficha, s.Cantidad as cantidad,
+        s.Fecha_Solicitud as fecha, s.Estado as estado
+        FROM solicitudes s
+        LEFT JOIN materiales m ON s.Codigo_Material = m.ID_Material`;
     try {
         const [rows] = await pool.query(query);
         res.status(200).json(rows);
@@ -29,7 +29,7 @@ export const obtenerSolicitudes = async (req, res) => {
 export const obtenerSolicitudPorId = async (req, res) => {
     const { id } = req.params;
     try {
-        const [rows] = await pool.query('SELECT * FROM SOLICITUDES WHERE ID_SOLICITUD = ?', [id]);
+        const [rows] = await pool.query('SELECT ID_Solicitud as id_solicitud, ID_Aprendiz as id_aprendiz, Codigo_Material as codigo_material, ID_Ficha as id_ficha, Cantidad as cantidad, Fecha_Solicitud as fecha, Estado as estado FROM solicitudes WHERE ID_Solicitud = ?', [id]);
         if (rows.length === 0) return res.status(404).json({ mensaje: 'Solicitud no encontrada' });
         res.status(200).json(rows[0]);
     } catch (error) {
@@ -40,7 +40,7 @@ export const obtenerSolicitudPorId = async (req, res) => {
 export const actualizarSolicitud = async (req, res) => {
     const { id } = req.params;
     const { id_aprendiz, codigo_material, id_ficha, cantidad, fecha, estado } = req.body;
-    const query = 'UPDATE SOLICITUDES SET ID_APRENDIZ=?, CODIGO_MATERIAL=?, ID_FICHA=?, CANTIDAD=?, FECHA=?, ESTADO=? WHERE ID_SOLICITUD=?';
+    const query = 'UPDATE solicitudes SET ID_Aprendiz=?, Codigo_Material=?, ID_Ficha=?, Cantidad=?, Fecha_Solicitud=?, Estado=? WHERE ID_Solicitud=?';
     try {
         const [result] = await pool.execute(query, [id_aprendiz, codigo_material, id_ficha, cantidad, fecha, estado, id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Solicitud no encontrada' });
@@ -53,7 +53,7 @@ export const actualizarSolicitud = async (req, res) => {
 export const eliminarSolicitud = async (req, res) => {
     const { id } = req.params;
     try {
-        const [result] = await pool.execute('DELETE FROM SOLICITUDES WHERE ID_SOLICITUD=?', [id]);
+        const [result] = await pool.execute('DELETE FROM solicitudes WHERE ID_Solicitud=?', [id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Solicitud no encontrada' });
         res.status(200).json({ mensaje: 'Solicitud eliminada con éxito', id_solicitud: id });
     } catch (error) {

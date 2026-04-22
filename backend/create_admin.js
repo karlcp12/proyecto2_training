@@ -3,22 +3,22 @@ import bcrypt from 'bcryptjs';
 
 async function createAdmin() {
     try {
-        const hash = await bcrypt.hash('admin123', 10);
-        const querySelect = "SELECT * FROM USUARIOS WHERE DOCUMENTO = 'admin'";
+        const hash = await bcrypt.hash('Admin123', 10);
+        const querySelect = "SELECT * FROM usuarios WHERE Correo = 'admin'";
         const [rows] = await pool.query(querySelect);
 
         if (rows.length > 0) {
             console.log("Admin already exists. Updating password and active status.");
-            await pool.query("UPDATE USUARIOS SET CONTRASENA = ?, ESTADO = 'Activo' WHERE DOCUMENTO = 'admin'", [hash]);
+            await pool.query("UPDATE usuarios SET Contrasena = ?, Estado = 'Activo' WHERE Correo = 'admin'", [hash]);
         } else {
             console.log("Admin does not exist. Creating new user.");
-            // ID_USUARIO, NOMBRE, APELLIDOS, DOCUMENTO, EMAIL, TELEFONO, ROL, ESTADO, CONTRASENA
+            // ID_Usuario, Nombre, Apellidos, Correo, Contrasena, Estado, ID_Rol
             await pool.query(
-                "INSERT INTO USUARIOS (NOMBRE, DOCUMENTO, EMAIL, ROL, ESTADO, CONTRASENA) VALUES (?, ?, ?, ?, ?, ?)",
-                ['Administrador', 'admin', 'admin@example.com', 'Administrador', 'Activo', hash]
+                "INSERT INTO usuarios (Nombre, Apellidos, Correo, Contrasena, Estado, ID_Rol) VALUES (?, ?, ?, ?, ?, ?)",
+                ['Administrador', 'Sistema', 'admin', hash, 'Activo', 1]
             );
         }
-        console.log("Admin setup complete!");
+        console.log("Admin setup complete! Username: 'admin', Password: 'Admin123'");
     } catch (e) {
         console.error("Error creating/updating admin:", e);
     } finally {

@@ -3,7 +3,7 @@ import { FaInfoCircle } from 'react-icons/fa';
 import '../MaterialesPage/MaterialesPage.css';
 import './NotificacionesPage.css';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://localhost:3001';
 
 interface Alerta {
   id_alerta: number;

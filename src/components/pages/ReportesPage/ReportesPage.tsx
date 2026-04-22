@@ -20,7 +20,7 @@ const mockReportesCompras: Reporte[] = [
   { numero: '00002', fecha: '15/09/2025', area: 'Logística', responsable: 'Ana Mora', seleccionado: false },
 ];
 
-// Mock data for the detail view
+
 const mockDetalleReporte = {
   infoGeneral: [
     { campo: 'Número de reporte', valor: '00001' },
@@ -74,7 +74,6 @@ export const ReportesPage: React.FC = () => {
     else setVista('inicio');
   };
 
-  // ─── VISTA INICIO ───────────────────────────────────────────────────────────
   if (vista === 'inicio') {
     return (
       <div className="reportes-page-container">
@@ -118,7 +117,7 @@ export const ReportesPage: React.FC = () => {
     );
   }
 
-  // ─── VISTA TABLA ─────────────────────────────────────────────────────────────
+
   if (vista === 'tabla') {
     return (
       <div className="reportes-page-container">

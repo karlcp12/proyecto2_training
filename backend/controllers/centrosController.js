@@ -1,10 +1,10 @@
 import { pool } from '../db.js';
 
 export const crearArea = async (req, res) => {
-    const { nombre_area } = req.body;
-    const query = 'INSERT INTO AREA (NOMBRE_AREA) VALUES (?)';
+    const { nombre_area, ambiente, id_sede } = req.body;
+    const query = 'INSERT INTO area (Nombre_Area, Ambiente, FK_ID_Sedes) VALUES (?, ?, ?)';
     try {
-        const [result] = await pool.execute(query, [nombre_area]);
+        const [result] = await pool.execute(query, [nombre_area, ambiente || '', id_sede || null]);
         res.status(201).json({ id_area: result.insertId, nombre_area, mensaje: 'Área creada con éxito' });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -12,7 +12,7 @@ export const crearArea = async (req, res) => {
 };
 
 export const obtenerAreas = async (req, res) => {
-    const query = 'SELECT ID_AREA as id_area, NOMBRE_AREA as nombre_area FROM AREA';
+    const query = 'SELECT ID_Area as id_area, Nombre_Area as nombre_area, Ambiente as ambiente FROM area';
     try {
         const [rows] = await pool.query(query);
         res.status(200).json(rows);
@@ -23,7 +23,7 @@ export const obtenerAreas = async (req, res) => {
 
 export const obtenerAreaPorId = async (req, res) => {
     const { id } = req.params;
-    const query = 'SELECT ID_AREA as id_area, NOMBRE_AREA as nombre_area FROM AREA WHERE ID_AREA = ?';
+    const query = 'SELECT ID_Area as id_area, Nombre_Area as nombre_area, Ambiente as ambiente FROM area WHERE ID_Area = ?';
     try {
         const [rows] = await pool.query(query, [id]);
         if (rows.length === 0) return res.status(404).json({ mensaje: 'Área no encontrada' });
@@ -35,10 +35,10 @@ export const obtenerAreaPorId = async (req, res) => {
 
 export const actualizarArea = async (req, res) => {
     const { id } = req.params;
-    const { nombre_area } = req.body;
-    const query = 'UPDATE AREA SET NOMBRE_AREA = ? WHERE ID_AREA = ?';
+    const { nombre_area, ambiente } = req.body;
+    const query = 'UPDATE area SET Nombre_Area = ?, Ambiente = ? WHERE ID_Area = ?';
     try {
-        const [result] = await pool.execute(query, [nombre_area, id]);
+        const [result] = await pool.execute(query, [nombre_area, ambiente, id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Área no encontrada' });
         res.status(200).json({ id_area: id, nombre_area, mensaje: 'Área actualizada con éxito' });
     } catch (error) {
@@ -48,7 +48,7 @@ export const actualizarArea = async (req, res) => {
 
 export const eliminarArea = async (req, res) => {
     const { id } = req.params;
-    const query = 'DELETE FROM AREA WHERE ID_AREA = ?';
+    const query = 'DELETE FROM area WHERE ID_Area = ?';
     try {
         const [result] = await pool.execute(query, [id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Área no encontrada' });

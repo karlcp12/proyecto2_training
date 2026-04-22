@@ -3,7 +3,7 @@ import { pool } from '../db.js'
 
 export const crearAprendiz = async (req, res) => {
     const { nombre, apellido, documento, email, direccion, telefono, id_ficha } = req.body;
-    const query = 'INSERT INTO APRENDICES (NOMBRE, APELLIDO, DOCUMENTO, CORREO, DIRECCION, TELEFONO, ID_FICHA) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO aprendices (nombre, apellido, documento, correo, direccion, telefono, id_ficha) VALUES (?, ?, ?, ?, ?, ?, ?)';
     try {
         const [result] = await pool.execute(query, [nombre, apellido, documento, email, direccion, telefono, id_ficha]);
         res.status(201).json({ id: result.insertId, ...req.body, mensaje: 'Aprendiz creado con éxito' });
@@ -14,7 +14,7 @@ export const crearAprendiz = async (req, res) => {
 
 
 export const obtenerAprendices = async (req, res) => {
-    const query = 'SELECT * FROM APRENDICES';
+    const query = 'SELECT * FROM aprendices';
     try {
         const [rows] = await pool.query(query);
         res.status(200).json(rows);
@@ -26,7 +26,7 @@ export const obtenerAprendices = async (req, res) => {
 
 export const obtenerAprendizPorId = async (req, res) => {
     const { id } = req.params;
-    const query = 'SELECT * FROM APRENDICES WHERE ID_APRENDIZ = ?';
+    const query = 'SELECT * FROM aprendices WHERE id_aprendiz = ?';
     try {
         const [rows] = await pool.query(query, [id]);
         if (rows.length === 0) {
@@ -42,7 +42,7 @@ export const obtenerAprendizPorId = async (req, res) => {
 export const actualizarAprendiz = async (req, res) => {
     const { id } = req.params;
     const { nombre, apellido, documento, email, direccion, telefono, id_ficha } = req.body;
-    const query = 'UPDATE APRENDICES SET NOMBRE = ?, APELLIDO = ?, DOCUMENTO = ?, CORREO = ?, DIRECCION = ?, TELEFONO = ?, ID_FICHA = ? WHERE ID_APRENDIZ = ?';
+    const query = 'UPDATE aprendices SET nombre = ?, apellido = ?, documento = ?, correo = ?, direccion = ?, telefono = ?, id_ficha = ? WHERE id_aprendiz = ?';
     try {
         const [result] = await pool.execute(query, [nombre, apellido, documento, email, direccion, telefono, id_ficha, id]);
         if (result.affectedRows === 0) {
@@ -57,7 +57,7 @@ export const actualizarAprendiz = async (req, res) => {
 
 export const eliminarAprendiz = async (req, res) => {
     const { id } = req.params;
-    const query = 'DELETE FROM APRENDICES WHERE ID_APRENDIZ = ?';
+    const query = 'DELETE FROM aprendices WHERE id_aprendiz = ?';
     try {
         const [result] = await pool.execute(query, [id]);
         if (result.affectedRows === 0) {

@@ -3,7 +3,7 @@ import { Modal } from '../../molecules/Modal/Modal';
 import { FaSearch, FaPlus } from 'react-icons/fa';
 import './FichasPage.css';
 
-const API_URL = 'http://localhost:3000/fichas';
+const API_URL = 'http://localhost:3001/fichas';
 
 interface Ficha {
   id_ficha?: number;

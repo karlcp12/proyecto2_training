@@ -31,7 +31,7 @@ export const AreaBodegaPage: React.FC = () => {
 
   const fetchAreaInfo = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/centros/${id}`);
+      const res = await fetch(`http://localhost:3001/centros/${id}`);
       const data = await res.json();
       setAreaName(data.nombre_area);
     } catch (err) { console.error(err); }
@@ -39,14 +39,14 @@ export const AreaBodegaPage: React.FC = () => {
 
   const fetchMaterialesArea = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/centros/${id}/materiales`);
+      const res = await fetch(`http://localhost:3001/centros/${id}/materiales`);
       setMaterialesArea(await res.json());
     } catch (err) { console.error(err); }
   };
 
   const fetchCatalogoGeneral = async () => {
     try {
-      const res = await fetch('http://localhost:3000/bodega');
+      const res = await fetch('http://localhost:3001/bodega');
       setCatalogo(await res.json());
     } catch (err) { console.error(err); }
   };
@@ -63,7 +63,7 @@ export const AreaBodegaPage: React.FC = () => {
     if (!selectedMaterial) return;
 
     try {
-      await fetch(`http://localhost:3000/centros/${id}/materiales`, {
+      await fetch(`http://localhost:3001/centros/${id}/materiales`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ codigo_material: Number(selectedMaterial), cantidad }),
@@ -78,7 +78,7 @@ export const AreaBodegaPage: React.FC = () => {
   const handleRemove = async (matId: number) => {
     if (!window.confirm('¿Remover este material del área?')) return;
     try {
-      await fetch(`http://localhost:3000/centros/${id}/materiales/${matId}`, {
+      await fetch(`http://localhost:3001/centros/${id}/materiales/${matId}`, {
         method: 'DELETE',
       });
       fetchMaterialesArea();

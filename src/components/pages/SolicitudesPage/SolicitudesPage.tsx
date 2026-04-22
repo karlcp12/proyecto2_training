@@ -4,9 +4,9 @@ import { FaSearch, FaPlus } from 'react-icons/fa';
 import '../MaterialesPage/MaterialesPage.css';
 import './SolicitudesPage.css';
 
-const API_URL = 'http://localhost:3000/solicitudes';
-const MAT_URL = 'http://localhost:3000/bodega';
-const FICHAS_URL = 'http://localhost:3000/fichas';
+const API_URL = 'http://localhost:3001/solicitudes';
+const MAT_URL = 'http://localhost:3001/bodega';
+const FICHAS_URL = 'http://localhost:3001/fichas';
 
 interface Solicitud {
   id_solicitud?: number;

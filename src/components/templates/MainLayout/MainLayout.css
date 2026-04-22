@@ -31,6 +31,8 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   min-height: calc(100vh - 120px);
   margin-bottom: 2rem;
+  height: max-content;
+  flex-shrink: 0;
 }
 
 .whatsapp-assistant-btn {

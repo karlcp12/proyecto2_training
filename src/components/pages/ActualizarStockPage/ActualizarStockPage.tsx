@@ -3,7 +3,7 @@ import { Modal } from '../../molecules/Modal/Modal';
 import { FaSyncAlt } from 'react-icons/fa';
 import '../MaterialesPage/MaterialesPage.css';
 
-const API_URL = 'http://localhost:3000/bodega';
+const API_URL = 'http://localhost:3001/bodega';
 
 interface Material {
   codigo_material: number;

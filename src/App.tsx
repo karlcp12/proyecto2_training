@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { LoginPage } from "./components/pages/LoginPage/LoginPage";
 import { RecoverPasswordPage } from "./components/pages/RecoverPasswordPage/RecoverPasswordPage";
 import { MainLayout } from "./components/templates/MainLayout/MainLayout";
 import { MainMenuDefaultPage } from "./components/pages/MainMenuDefaultPage/MainMenuDefaultPage";
+import { DashboardPage } from "./components/pages/DashboardPage/DashboardPage";
 import { MaterialesPage } from "./components/pages/MaterialesPage/MaterialesPage";
 import { AreasPage } from "./components/pages/AreasPage/AreasPage";
 import { AreaBodegaPage } from "./components/pages/AreaBodegaPage/AreaBodegaPage";
@@ -14,6 +15,7 @@ import { NotificacionesPage } from "./components/pages/NotificacionesPage/Notifi
 import { ActualizarStockPage } from "./components/pages/ActualizarStockPage/ActualizarStockPage";
 import { SolicitudesPage } from "./components/pages/SolicitudesPage/SolicitudesPage";
 import { VerificacionMaterialesPage } from "./components/pages/VerificacionMaterialesPage/VerificacionMaterialesPage";
+import { AprendicesPage } from "./components/pages/AprendicesPage/AprendicesPage";
 import { ProtectedRoute } from "./components/templates/ProtectedRoute/ProtectedRoute";
 
 function App() {
@@ -26,8 +28,9 @@ function App() {
         
         <Route element={<ProtectedRoute />}>
           <Route path="/app" element={<MainLayout />}>
-            <Route index element={<MainMenuDefaultPage />} />
-          <Route path="materiales" element={<MaterialesPage />} />
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="materiales" element={<MaterialesPage />} />
           <Route path="areas" element={<AreasPage />} />
           <Route path="areas/:id/bodega" element={<AreaBodegaPage />} />
           <Route path="fichas" element={<FichasPage />} />
@@ -36,6 +39,7 @@ function App() {
           <Route path="notificaciones" element={<NotificacionesPage />} />
             <Route path="actualizar-stock" element={<ActualizarStockPage />} />
             <Route path="solicitudes" element={<SolicitudesPage />} />
+            <Route path="aprendices" element={<AprendicesPage />} />
             <Route path="verificacion" element={<VerificacionMaterialesPage />} />
           </Route>
         </Route>
