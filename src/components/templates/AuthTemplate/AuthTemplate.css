@@ -1,24 +1,25 @@
 .auth-template {
-  height: 98vh;
-
+  position: fixed;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background-image: url("/sena.jpg");
-  background-size: cover;
-  background-position: center;
-
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  z-index: 1;
 }
-.auth-container{
-  height: 98vh;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.auth-background {
+  position: absolute;
+  inset: -20px;
+  background: url("/sena.jpg") center/cover no-repeat;
+  filter: blur(15px) brightness(0.8);
+  z-index: -1;
+  transform: scale(1.1);
+}
 
-  background-image: url("/sena.jpg");
-  background-size: cover;
-  background-position: center;
-
+.auth-template > *:not(.auth-background) {
+  position: relative;
+  z-index: 2;
 }

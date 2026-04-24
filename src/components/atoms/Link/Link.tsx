@@ -3,11 +3,12 @@ import "./Link.css";
 interface LinkProps {
   text: string;
   href?: string;
+  className?: string;
 }
 
-export const Link = ({ text, href = "#" }: LinkProps) => {
+export const Link = ({ text, href = "#", className = "" }: LinkProps) => {
   return (
-    <a className="link" href={href}>
+    <a className={`link ${className}`} href={href}>
       {text}
     </a>
   );

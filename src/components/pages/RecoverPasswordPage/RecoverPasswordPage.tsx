@@ -1,10 +1,10 @@
+import { AuthTemplate } from "../../templates/AuthTemplate/AuthTemplate";
 import { RecoverPasswordForm } from "../../organisms/RecoverPasswordForm/RecoverPasswordForm";
-import "../../templates/AuthTemplate/AuthTemplate.css";
 
 export const RecoverPasswordPage = () => {
   return (
-    <div className="auth-container">
+    <AuthTemplate>
       <RecoverPasswordForm />
-    </div>
+    </AuthTemplate>
   );
 };

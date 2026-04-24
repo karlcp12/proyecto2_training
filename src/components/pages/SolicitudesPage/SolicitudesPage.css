@@ -1,0 +1,349 @@
+:root {
+    --sena-green: #39A900;
+    --sena-orange: #FF6B00;
+    --sena-dark: #333333;
+    --bg-light: #f4f7f6;
+}
+
+.solicitudes-page-container {
+    padding: 25px;
+    background-color: var(--bg-light);
+    min-height: calc(100vh - 80px);
+}
+
+.solicitudes-header {
+    margin-bottom: 30px;
+}
+
+.solicitudes-header h1 {
+    color: var(--sena-dark);
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+    border-left: 5px solid var(--sena-green);
+    padding-left: 15px;
+}
+
+.solicitudes-header p {
+    color: #666;
+    font-size: 1rem;
+    margin-left: 20px;
+}
+
+/* Stats Grid */
+.sol-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.sol-stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-bottom: 4px solid transparent;
+}
+
+.sol-stat-card.total { border-color: #64748b; }
+.sol-stat-card.pendiente { border-color: var(--sena-orange); }
+.sol-stat-card.aprobada { border-color: var(--sena-green); }
+.sol-stat-card.rechazada { border-color: #ef4444; }
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: #f8fafc;
+}
+
+.total .stat-icon { color: #64748b; }
+.pendiente .stat-icon { color: var(--sena-orange); }
+.aprobada .stat-icon { color: var(--sena-green); }
+.rechazada .stat-icon { color: #ef4444; }
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--sena-dark);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Content Card */
+.sol-content-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.sol-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.sol-filters {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-tab {
+    padding: 8px 18px;
+    border-radius: 25px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #64748b;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-tab:hover {
+    background: #f8fafc;
+}
+
+.filter-tab.active {
+    background: var(--sena-green);
+    color: white;
+    border-color: var(--sena-green);
+    box-shadow: 0 4px 10px rgba(57, 169, 0, 0.2);
+}
+
+.sol-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.sol-search input {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    width: 300px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.sol-search input:focus {
+    border-color: var(--sena-green);
+}
+
+.btn-new-sol {
+    background: var(--sena-orange);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s;
+}
+
+.btn-new-sol:hover {
+    transform: scale(1.02);
+    background: #e66000;
+}
+
+/* Table */
+.sol-table-wrapper {
+    overflow-x: auto;
+}
+
+.sol-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sol-table th {
+    padding: 15px;
+    text-align: left;
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.sol-table td {
+    padding: 15px;
+    border-bottom: 1px solid #f1f5f9;
+    color: var(--sena-dark);
+}
+
+.bold-id {
+    font-weight: 800;
+    color: var(--sena-green);
+}
+
+.cell-material {
+    display: flex;
+    flex-direction: column;
+}
+
+.mat-name {
+    font-weight: 700;
+    color: var(--sena-dark);
+}
+
+.mat-code {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.ficha-tag {
+    background: #f1f5f9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.qty-val {
+    font-weight: 800;
+    background: #eff6ff;
+    color: #1d4ed8;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* Badges */
+.sol-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.sol-badge.pendiente { background: #fef3c7; color: #92400e; }
+.sol-badge.aprobada { background: #dcfce7; color: #166534; }
+.sol-badge.rechazada { background: #fee2e2; color: #991b1b; }
+
+.table-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.btn-edit-sol, .btn-delete-sol {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.btn-edit-sol { background: #f1f5f9; color: #475569; }
+.btn-delete-sol { background: #fee2e2; color: #ef4444; }
+
+.btn-edit-sol:hover { background: #e2e8f0; }
+.btn-delete-sol:hover { background: #fecaca; }
+
+.no-data {
+    text-align: center;
+    padding: 40px;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* CRUD Form in Modal */
+.crud-form {
+    padding: 10px;
+}
+
+.crud-form-title {
+    color: var(--sena-dark);
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid var(--sena-green);
+    padding-bottom: 10px;
+}
+
+.sol-section-label {
+    background: #f8fafc;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--sena-green);
+    margin: 15px 0 10px 0;
+    text-transform: uppercase;
+}
+
+.crud-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.crud-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.crud-form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.crud-form-group input, .crud-form-group select {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    outline: none;
+}
+
+.crud-form-group input:focus, .crud-form-group select:focus {
+    border-color: var(--sena-green);
+}
+
+.crud-form-actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-submit-crud {
+    background: var(--sena-green);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-submit-crud:hover {
+    background: #2d8600;
+}
