@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Logo } from "../../atoms/Logo/Logo";
 import {
   FaHome,
   FaTools,
@@ -12,6 +11,8 @@ import {
   FaWarehouse,
   FaFileAlt,
   FaUserCheck,
+  FaCog,
+  FaHistory
 } from "react-icons/fa";
 import "./Sidebar.css";
 
@@ -28,7 +29,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-logo">
-        <Logo width={isCollapsed ? 40 : 180} />
+        <NavLink to="/app" className="logo-link">
+          <img 
+            src="/LogoLogitmat_sin_fondo.png" 
+            alt="Logimat Logo" 
+            className="sidebar-main-logo"
+            style={{ width: isCollapsed ? '40px' : '210px' }}
+          />
+        </NavLink>
       </div>
 
       <nav className="sidebar-nav">
@@ -74,6 +82,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
             <NavLink to="/app/actualizar-stock" className="nav-item flat-link">
               <FaWarehouse className="nav-icon" /> ACTUALIZAR STOCK
             </NavLink>
+            {isAdmin && (
+              <NavLink to="/app/auditoria" className="nav-item flat-link">
+                <FaHistory className="nav-icon" /> AUDITORÍA
+              </NavLink>
+            )}
           </>
         )}
 
@@ -89,7 +102,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
             <span style={{ lineHeight: '1.1' }}>VERIFICACIÓN DE<br />MATERIALES</span>
           </NavLink>
         )}
+
+        {isAdmin && (
+          <NavLink to="/app/configuracion" className="nav-item flat-link">
+            <FaCog className="nav-icon" /> CONFIGURACIÓN
+          </NavLink>
+        )}
       </nav>
+
+      <div className="sidebar-bottom-logo">
+        <img src="/logo-sena-negro.png" alt="SENA Logo" className="sena-logo-img" />
+      </div>
     </aside>
   );
 };

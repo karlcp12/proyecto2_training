@@ -47,8 +47,13 @@ export const UsuariosPage: React.FC = () => {
 
   const handleDelete = async (usuario: UsuarioConId) => {
     if (window.confirm("¿Está seguro que desea eliminar este usuario?")) {
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const userName = currentUser.nombre || currentUser.NOMBRE || currentUser.usuario || 'Desconocido';
       try {
-        await fetch(`${API_URL}/${usuario.id_usuario}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/${usuario.id_usuario}?user=${encodeURIComponent(userName)}`, { 
+            method: 'DELETE',
+            headers: { 'X-User-Action': userName }
+        });
         await fetchUsuarios();
       } catch (err) {
         console.error('Error al eliminar usuario:', err);
@@ -57,13 +62,17 @@ export const UsuariosPage: React.FC = () => {
   };
 
   const handleSubmitForm = async (data: UsuarioData) => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const userName = currentUser.nombre || currentUser.NOMBRE || currentUser.usuario || 'Desconocido';
     try {
-      const url = editingUsuario?.id_usuario ? `${API_URL}/${editingUsuario.id_usuario}` : API_URL;
+      const url = editingUsuario?.id_usuario 
+        ? `${API_URL}/${editingUsuario.id_usuario}?user=${encodeURIComponent(userName)}` 
+        : `${API_URL}?user=${encodeURIComponent(userName)}`;
       const method = editingUsuario?.id_usuario ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'X-User-Action': userName },
         body: JSON.stringify(data),
       });
 

@@ -12,7 +12,7 @@ interface GaugeChartProps {
   color?: string;
 }
 
-export const GaugeChartComponent: React.FC<GaugeChartProps> = ({
+export const GaugeChartComponent: React.FC<GaugeChartProps> = React.memo(({
   value,
   label,
   color = '#4caf50',
@@ -48,4 +48,4 @@ export const GaugeChartComponent: React.FC<GaugeChartProps> = ({
       <div style={{ fontSize: '14px', color: '#666' }}>{label}</div>
     </div>
   );
-};
+});

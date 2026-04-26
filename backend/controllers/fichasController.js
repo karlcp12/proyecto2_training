@@ -1,4 +1,5 @@
 import { pool } from '../db.js';
+import { logAction } from './auditController.js';
 
 export const crearFicha = async (req, res) => {
     const { numero_ficha, id_programa, id_area, instructor_lider, ambiente, jornada, fecha_inicio, fecha_fin, estado } = req.body;
@@ -6,6 +7,9 @@ export const crearFicha = async (req, res) => {
     try {
         const [result] = await pool.execute(query, [numero_ficha, id_programa, id_area, instructor_lider, ambiente, jornada, fecha_inicio, fecha_fin, estado]);
         res.status(201).json({ id_ficha: result.insertId, ...req.body, mensaje: 'Ficha creada con éxito' });
+        
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Crear', 'Fichas', `Nueva ficha: ${numero_ficha}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -60,6 +64,9 @@ export const actualizarFicha = async (req, res) => {
         const [result] = await pool.execute(query, [numero_ficha, id_programa, id_area, instructor_lider, ambiente, jornada, fecha_inicio, fecha_fin, estado, id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Ficha no encontrada' });
         res.status(200).json({ id_ficha: id, ...req.body, mensaje: 'Ficha actualizada con éxito' });
+        
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Editar', 'Fichas', `Ficha ID: ${id} - Nuevo número: ${numero_ficha}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -72,6 +79,9 @@ export const eliminarFicha = async (req, res) => {
         const [result] = await pool.execute(query, [id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Ficha no encontrada' });
         res.status(200).json({ mensaje: 'Ficha eliminada con éxito', id_ficha: id });
+        
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Eliminar', 'Fichas', `Ficha ID: ${id}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

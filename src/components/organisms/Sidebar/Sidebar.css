@@ -23,6 +23,53 @@
   min-height: 100px;
 }
 
+.logo-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+}
+
+/* Animations for Logos */
+@keyframes logoEntranceDown {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.5);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes logoEntranceUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.5);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.sidebar-main-logo {
+  height: auto;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: block;
+  margin: 0 auto;
+  animation: logoEntranceDown 1.2s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.sidebar-main-logo:hover {
+  transform: scale(1.1) rotate(2deg);
+}
+
 .sidebar-nav {
   flex: 1;
   padding: 1rem 0;
@@ -218,4 +265,31 @@
   .sidebar.active {
     left: 0;
   }
+}
+
+.sidebar-bottom-logo {
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+}
+
+.sena-logo-img {
+  width: 130px;
+  height: auto;
+  opacity: 0.8;
+  transition: all 0.4s ease;
+  filter: grayscale(100%);
+  animation: logoEntranceUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.3s both;
+}
+
+.sena-logo-img:hover {
+  opacity: 1;
+  filter: grayscale(0%);
+  transform: scale(1.1);
+}
+
+.sidebar.collapsed .sidebar-bottom-logo {
+  display: none;
 }

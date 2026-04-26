@@ -1,4 +1,5 @@
 import { pool } from '../db.js';
+import { logAction } from './auditController.js';
 
 export const crearUsuario = async (req, res) => {
     const { nombre, apellidos, email, telefono, documento, rol, password, estado } = req.body;
@@ -9,6 +10,9 @@ export const crearUsuario = async (req, res) => {
     try {
         const [result] = await pool.execute(query, [nombre, apellidos, email, telefono, documento, id_rol, password || 'Admin123', estado || 'Activo']);
         res.status(201).json({ id_usuario: result.insertId, ...req.body, mensaje: 'Usuario creado con éxito' });
+        
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Crear', 'Usuarios', `Nuevo usuario: ${nombre} ${apellidos}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -72,6 +76,9 @@ export const actualizarUsuario = async (req, res) => {
             return res.status(404).json({ mensaje: 'Usuario no encontrado' });
         }
         res.status(200).json({ id_usuario: id, ...req.body, mensaje: 'Usuario actualizado con éxito' });
+
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Editar', 'Usuarios', `Usuario ID: ${id} - ${nombre} ${apellidos}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -86,6 +93,9 @@ export const eliminarUsuario = async (req, res) => {
             return res.status(404).json({ mensaje: 'Usuario no encontrado' });
         }
         res.status(200).json({ mensaje: 'Usuario eliminado con éxito', id_usuario: id });
+
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Eliminar', 'Usuarios', `Usuario ID: ${id}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

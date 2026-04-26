@@ -17,7 +17,7 @@ interface LineChartProps {
   color?: string;
 }
 
-export const LineChartComponent: React.FC<LineChartProps> = ({
+export const LineChartComponent: React.FC<LineChartProps> = React.memo(({
   data,
   xKey,
   yKey,
@@ -44,4 +44,4 @@ export const LineChartComponent: React.FC<LineChartProps> = ({
       </LineChart>
     </ResponsiveContainer>
   );
-};
+});

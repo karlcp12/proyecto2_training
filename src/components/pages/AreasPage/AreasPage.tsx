@@ -71,16 +71,19 @@ export const AreasPage: React.FC = () => {
   };
 
   const handleSubmit = async (data: Area) => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const userName = currentUser.nombre || currentUser.NOMBRE || currentUser.usuario || 'Desconocido';
+    const url = editing?.id_area 
+        ? `${API_URL}/${editing.id_area}?user=${encodeURIComponent(userName)}` 
+        : `${API_URL}?user=${encodeURIComponent(userName)}`;
+    const method = editing?.id_area ? 'PUT' : 'POST';
+
     try {
-      if (editing?.id_area) {
-        await fetch(`${API_URL}/${editing.id_area}`, {
-          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-        });
-      } else {
-        await fetch(API_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-        });
-      }
+      await fetch(url, {
+        method, 
+        headers: { 'Content-Type': 'application/json', 'X-User-Action': userName }, 
+        body: JSON.stringify(data),
+      });
       await fetchAreas();
       setIsModalOpen(false);
     } catch (err) { console.error(err); }
@@ -88,7 +91,12 @@ export const AreasPage: React.FC = () => {
 
   const handleDelete = async (a: Area) => {
     if (window.confirm('¿Eliminar esta área?')) {
-      await fetch(`${API_URL}/${a.id_area}`, { method: 'DELETE' });
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const userName = currentUser.nombre || currentUser.NOMBRE || currentUser.usuario || 'Desconocido';
+      await fetch(`${API_URL}/${a.id_area}?user=${encodeURIComponent(userName)}`, { 
+        method: 'DELETE',
+        headers: { 'X-User-Action': userName }
+      });
       await fetchAreas();
     }
   };

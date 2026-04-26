@@ -1,16 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import { Logo } from "../../atoms/Logo/Logo";
 import { Input } from "../../atoms/Input/Input";
 import { Button } from "../../atoms/Button/Button";
 import { Link } from "../../atoms/Link/Link";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./LoginForm.css";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+
+  // Load saved user if exists
+  useEffect(() => {
+    const savedUser = localStorage.getItem('remembered_user');
+    if (savedUser) {
+      setUser(savedUser);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,8 +38,21 @@ export const LoginForm = () => {
         const data = await response.json();
 
         if (response.ok) {
+            // Remember me logic
+            if (rememberMe) {
+                localStorage.setItem('remembered_user', user);
+            } else {
+                localStorage.removeItem('remembered_user');
+            }
+
             // Store user info in localStorage for basic "session"
             localStorage.setItem('user', JSON.stringify(data.usuario));
+            
+            toast.success(`¡Bienvenido de nuevo, ${data.usuario.nombre}!`, {
+                icon: '👋',
+                duration: 4000
+            });
+
             navigate('/app');
         } else {
             setError(data.mensaje || 'Error al iniciar sesión');
@@ -70,12 +96,20 @@ export const LoginForm = () => {
               <div className="input-group">
                 <div className="input-with-icon">
                   <Input 
-                    type="password" 
+                    type={showPassword ? "text" : "password"} 
                     placeholder="Contraseña" 
                     value={password} 
                     onChange={(e) => setPassword(e.target.value)} 
                     className="input-field-alt"
                   />
+                  <button 
+                    type="button" 
+                    className="password-toggle-btn" 
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
                 </div>
               </div>
 
@@ -83,7 +117,12 @@ export const LoginForm = () => {
 
               <div className="form-options">
                 <div className="remember-me">
-                  <input type="checkbox" id="remember" />
+                  <input 
+                    type="checkbox" 
+                    id="remember" 
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
                   <label htmlFor="remember">Recordarme</label>
                 </div>
                 <Link text="¿Olvidó su contraseña?" href="/recover-password" className="forgot-link-alt" />

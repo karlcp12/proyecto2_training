@@ -69,10 +69,17 @@ export const ActualizarStockPage: React.FC = () => {
   const handleUpdateStock = async (id: number, nuevaCantidad: number) => {
     const mat = materiales.find(m => m.codigo_material === id);
     if (!mat) return;
+    
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const userName = currentUser.nombre || currentUser.NOMBRE || currentUser.usuario || 'Desconocido';
+    
     try {
-      await fetch(`${API_URL}/${id}`, {
+      await fetch(`${API_URL}/${id}?user=${encodeURIComponent(userName)}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-User-Action': userName
+        },
         body: JSON.stringify({ ...mat, cantidad: nuevaCantidad }),
       });
       await fetchMateriales();

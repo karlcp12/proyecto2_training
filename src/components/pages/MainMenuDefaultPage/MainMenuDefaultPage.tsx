@@ -5,6 +5,7 @@ import { BarChartComponent } from "../../organisms/Charts/BarChartComponent";
 import { LineChartComponent } from "../../organisms/Charts/LineChartComponent";
 import { PieChartComponent } from "../../organisms/Charts/PieChartComponent";
 import { FaBox, FaClipboardList, FaExclamationTriangle, FaExchangeAlt } from 'react-icons/fa';
+import { useSettings } from '../../../context/SettingsContext';
 import "../../organisms/Charts/Charts.css";
 import "./MainMenuDefaultPage.css";
 
@@ -46,6 +47,7 @@ export const MainMenuDefaultPage = () => {
     statusData: []
   });
 
+  const { settings } = useSettings();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,7 +62,8 @@ export const MainMenuDefaultPage = () => {
         const res = await fetch(`${API_BASE}/stats/dashboard`);
         const data = await res.json();
         
-        setStats({
+        setStats(prev => ({
+          ...prev,
           totalMaterials: data.totals.materials,
           activeRequests: data.totals.pendingSolicitudes,
           criticalStock: data.totals.criticalStock,
@@ -68,7 +71,7 @@ export const MainMenuDefaultPage = () => {
           materialsData: data.charts.topMaterials,
           movementsData: data.charts.movementHistory,
           statusData: data.charts.statusDistribution
-        });
+        }));
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       }
@@ -99,7 +102,8 @@ export const MainMenuDefaultPage = () => {
           value={stats.criticalStock} 
           icon={<FaExclamationTriangle />} 
           color="#f44336" 
-          subtitle="Materiales con < 5 unidades"
+          subtitle={`Materiales con < ${settings.lowStockThreshold} unidades`}
+          onClick={() => navigate('/app/materiales')}
         />
         <SummaryCard 
           title="Movimientos (7 días)" 
@@ -115,12 +119,20 @@ export const MainMenuDefaultPage = () => {
 
         <div className="dashboard-card">
           <div className="dashboard-card-title">Estado de Solicitudes</div>
-          <PieChartComponent data={stats.statusData} />
+          <PieChartComponent 
+            data={stats.statusData} 
+            onPieClick={() => navigate('/app/solicitudes')}
+          />
         </div>
 
         <div className="dashboard-card dashboard-card-full">
           <div className="dashboard-card-title">Stock de Materiales Principales</div>
-          <BarChartComponent data={stats.materialsData} xKey="name" yKey="quantity" />
+          <BarChartComponent 
+            data={stats.materialsData} 
+            xKey="name" 
+            yKey="quantity" 
+            onBarClick={() => navigate('/app/materiales')}
+          />
         </div>
       </div>
     </div>

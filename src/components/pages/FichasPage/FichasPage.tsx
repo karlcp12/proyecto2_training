@@ -152,16 +152,19 @@ export const FichasPage: React.FC = () => {
   };
 
   const handleSubmit = async (data: Ficha) => {
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const userName = currentUser.nombre || currentUser.NOMBRE || currentUser.usuario || 'Desconocido';
+    const method = editing?.id_ficha ? 'PUT' : 'POST';
+    const url = editing?.id_ficha 
+        ? `${API_URL}/${editing.id_ficha}?user=${encodeURIComponent(userName)}` 
+        : `${API_URL}?user=${encodeURIComponent(userName)}`;
+
     try {
-      if (editing?.id_ficha) {
-        await fetch(`${API_URL}/${editing.id_ficha}`, {
-          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-        });
-      } else {
-        await fetch(API_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-        });
-      }
+      await fetch(url, {
+        method, 
+        headers: { 'Content-Type': 'application/json', 'X-User-Action': userName }, 
+        body: JSON.stringify(data),
+      });
       await fetchFichas();
       setIsModalOpen(false);
     } catch (err) { console.error(err); }
@@ -169,7 +172,12 @@ export const FichasPage: React.FC = () => {
 
   const handleDelete = async (f: Ficha) => {
     if (window.confirm('¿Eliminar esta ficha?')) {
-      await fetch(`${API_URL}/${f.id_ficha}`, { method: 'DELETE' });
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const userName = currentUser.nombre || currentUser.NOMBRE || currentUser.usuario || 'Desconocido';
+      await fetch(`${API_URL}/${f.id_ficha}?user=${encodeURIComponent(userName)}`, { 
+        method: 'DELETE',
+        headers: { 'X-User-Action': userName }
+      });
       await fetchFichas();
     }
   };

@@ -184,12 +184,18 @@ export const SolicitudesPage: React.FC = () => {
 
   const handleSubmit = async (data: Solicitud) => {
     try {
-      const url = editing?.id_solicitud ? `${API_URL}/${editing.id_solicitud}` : API_URL;
+      const userName = currentUser.nombre || currentUser.NOMBRE || currentUser.usuario || 'Desconocido';
+      const url = editing?.id_solicitud 
+        ? `${API_URL}/${editing.id_solicitud}?user=${encodeURIComponent(userName)}` 
+        : `${API_URL}?user=${encodeURIComponent(userName)}`;
       const method = editing?.id_solicitud ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
         method, 
-        headers: { 'Content-Type': 'application/json' }, 
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-User-Action': `${currentUser.nombre} ${currentUser.apellidos || ''}`.trim() || 'Desconocido'
+        }, 
         body: JSON.stringify(data),
       });
 
@@ -209,7 +215,11 @@ export const SolicitudesPage: React.FC = () => {
 
   const handleDelete = async (s: Solicitud) => {
     if (window.confirm('¿Eliminar esta solicitud?')) {
-      await fetch(`${API_URL}/${s.id_solicitud}`, { method: 'DELETE' });
+      const userName = currentUser.nombre || currentUser.NOMBRE || currentUser.usuario || 'Desconocido';
+      await fetch(`${API_URL}/${s.id_solicitud}?user=${encodeURIComponent(userName)}`, { 
+        method: 'DELETE',
+        headers: { 'X-User-Action': userName }
+      });
       await fetchSolicitudes();
     }
   };

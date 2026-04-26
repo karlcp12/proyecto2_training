@@ -120,6 +120,25 @@
 .bold-text { font-weight: 600; color: #1a1a1a; }
 
 /* Action buttons */
+.btn-action-qr {
+  background: #f0f4f0;
+  color: #39A900;
+  border: 1px solid #39A900;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-right: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-action-qr:hover {
+  background: #39A900;
+  color: white;
+}
+
 .btn-action-edit {
   background: #e8f5e9;
   color: #2e7d32;
