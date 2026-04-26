@@ -1,4 +1,5 @@
 import { pool } from '../db.js';
+import { logAction } from './auditController.js';
 
 export const crearArea = async (req, res) => {
     const { nombre_area, nombre_programa } = req.body;
@@ -17,6 +18,9 @@ export const crearArea = async (req, res) => {
         }
 
         res.status(201).json({ id_area: idArea, nombre_area, mensaje: 'Área y programa creados con éxito' });
+        
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Crear', 'Áreas', `Nueva área: ${nombre_area}`);
     } catch (error) {
         console.error("Error en crearArea:", error);
         res.status(500).json({ error: error.message });
@@ -59,6 +63,9 @@ export const actualizarArea = async (req, res) => {
         const [result] = await pool.execute(query, [nombre_area, id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Área no encontrada' });
         res.status(200).json({ id_area: id, nombre_area, mensaje: 'Área actualizada con éxito' });
+
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Editar', 'Áreas', `Área ID: ${id} - Nuevo nombre: ${nombre_area}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -71,6 +78,9 @@ export const eliminarArea = async (req, res) => {
         const [result] = await pool.execute(query, [id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Área no encontrada' });
         res.status(200).json({ mensaje: 'Área eliminada con éxito', id_area: id });
+        
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Eliminar', 'Áreas', `Área ID: ${id}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

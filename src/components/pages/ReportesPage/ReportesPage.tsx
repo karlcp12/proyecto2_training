@@ -116,7 +116,7 @@ export const ReportesPage: React.FC = () => {
     ));
   };
 
-  const handleExportSelected = () => {
+  const handleExportSelected = async () => {
     const selected = materiales.filter(m => m.selected);
     if (selected.length === 0) {
         alert('Por favor selecciona al menos un material');
@@ -129,14 +129,14 @@ export const ReportesPage: React.FC = () => {
             cantidad: Number(m.cantidad) || 0,
             tipo: m.tipo || 'Sin categoría'
         }));
-        generateMaterialsPDF(mapped, `Reporte de ${selected.length} Materiales Seleccionados`);
+        await generateMaterialsPDF(mapped, `Reporte de ${selected.length} Materiales Seleccionados`);
     } catch (err) {
         console.error("Error generating PDF:", err);
         alert("Ocurrió un error al generar el PDF.");
     }
   };
 
-  const handleExportAll = () => {
+  const handleExportAll = async () => {
     if (materiales.length === 0) {
         alert('No hay materiales cargados para exportar');
         return;
@@ -148,7 +148,7 @@ export const ReportesPage: React.FC = () => {
             cantidad: Number(m.cantidad) || 0,
             tipo: m.tipo || 'Sin categoría'
         }));
-        generateMaterialsPDF(mapped, 'Reporte Completo de Inventario');
+        await generateMaterialsPDF(mapped, 'Reporte Completo de Inventario');
     } catch (err) {
         console.error("Error generating PDF:", err);
         alert("Ocurrió un error al generar el PDF.");
@@ -383,7 +383,7 @@ export const ReportesPage: React.FC = () => {
                     <button
                       className="icon-button pdf-btn"
                       title="Generar Ficha PDF"
-                      onClick={() => generateSingleMaterialPDF({
+                      onClick={async () => await generateSingleMaterialPDF({
                           codigo: m.codigo_material,
                           nombre: m.nombre,
                           cantidad: m.cantidad,

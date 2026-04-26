@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Logo } from "../../atoms/Logo/Logo";
 import {
   FaHome,
   FaTools,
@@ -12,6 +11,8 @@ import {
   FaWarehouse,
   FaFileAlt,
   FaUserCheck,
+  FaCog,
+  FaHistory
 } from "react-icons/fa";
 import "./Sidebar.css";
 
@@ -81,6 +82,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
             <NavLink to="/app/actualizar-stock" className="nav-item flat-link">
               <FaWarehouse className="nav-icon" /> ACTUALIZAR STOCK
             </NavLink>
+            {isAdmin && (
+              <NavLink to="/app/auditoria" className="nav-item flat-link">
+                <FaHistory className="nav-icon" /> AUDITORÍA
+              </NavLink>
+            )}
           </>
         )}
 
@@ -94,6 +100,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
           <NavLink to="/app/verificacion" className="nav-item flat-link">
             <FaUserCheck className="nav-icon" /> 
             <span style={{ lineHeight: '1.1' }}>VERIFICACIÓN DE<br />MATERIALES</span>
+          </NavLink>
+        )}
+
+        {isAdmin && (
+          <NavLink to="/app/configuracion" className="nav-item flat-link">
+            <FaCog className="nav-icon" /> CONFIGURACIÓN
           </NavLink>
         )}
       </nav>

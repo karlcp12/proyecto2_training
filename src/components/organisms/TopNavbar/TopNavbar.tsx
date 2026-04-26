@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { FaSearch, FaUserCircle, FaBars, FaBell, FaSignOutAlt, FaCamera, FaUserEdit } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useSettings } from "../../../context/SettingsContext";
 import "./TopNavbar.css";
 
 interface TopNavbarProps {
@@ -18,17 +19,30 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onToggleSidebar }) => {
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const userKey = currentUser.id_usuario || currentUser.email || 'guest';
 
+  const { settings } = useSettings();
+  const location = useLocation();
+
+  const fetchNotifs = () => {
+    fetch('http://localhost:3001/stats/alertas')
+      .then(r => r.json())
+      .then(data => setNotifCount(Array.isArray(data) ? data.length : 0))
+      .catch(() => setNotifCount(0));
+  };
+
   useEffect(() => {
-    // Load profile pic from localStorage using a unique key per user
+    // Load profile pic
     const savedPic = localStorage.getItem(`profile_pic_${userKey}`);
     setProfilePic(savedPic || null);
 
-    // Fetch notifications count
-    fetch('http://localhost:3001/stats/alertas')
-      .then(r => r.json())
-      .then(data => setNotifCount(data.length))
-      .catch(() => { });
+    fetchNotifs();
 
+    // Set auto-refresh interval based on system settings
+    const interval = setInterval(fetchNotifs, settings.refreshInterval * 1000);
+
+    return () => clearInterval(interval);
+  }, [userKey, settings.refreshInterval, location.pathname]);
+
+  useEffect(() => {
     // Close menu when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -37,7 +51,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onToggleSidebar }) => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [userKey]);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');

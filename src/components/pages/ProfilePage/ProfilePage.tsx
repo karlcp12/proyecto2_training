@@ -5,7 +5,6 @@ import './ProfilePage.css';
 export const ProfilePage: React.FC = () => {
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
   const [profilePic, setProfilePic] = useState<string | null>(null);
-  const [coverPic, setCoverPic] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     nombre: currentUser.nombre || '',
@@ -21,11 +20,9 @@ export const ProfilePage: React.FC = () => {
 
   useEffect(() => {
     const savedProfilePic = localStorage.getItem(`profile_pic_${userKey}`);
-    const savedCoverPic = localStorage.getItem(`cover_pic_${userKey}`);
     const savedInfo = localStorage.getItem(`profile_info_${userKey}`);
     
     if (savedProfilePic) setProfilePic(savedProfilePic);
-    if (savedCoverPic) setCoverPic(savedCoverPic);
     if (savedInfo) setFormData(JSON.parse(savedInfo));
   }, [userKey]);
 
