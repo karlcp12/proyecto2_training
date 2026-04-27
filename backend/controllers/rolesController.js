@@ -1,18 +1,15 @@
-import { Router } from "express";
-import { pool } from "../db.js";
+import { pool } from '../config/db.js';
 
-const router = Router();
-
-router.get('/', async (req, res) => {
+export const obtenerRoles = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT ID_Rol as id, Nombre_Rol as nombre FROM rol');
         res.status(200).json(rows);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-});
+};
 
-router.get('/:id', async (req, res) => {
+export const obtenerRolPorId = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT ID_Rol as id, Nombre_Rol as nombre FROM rol WHERE ID_Rol = ?', [req.params.id]);
         if (rows.length === 0) return res.status(404).json({ mensaje: 'Rol no encontrado' });
@@ -20,9 +17,9 @@ router.get('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-});
+};
 
-router.post('/', async (req, res) => {
+export const crearRol = async (req, res) => {
     const { nombre } = req.body;
     try {
         const [result] = await pool.execute('INSERT INTO rol (Nombre_Rol) VALUES (?)', [nombre]);
@@ -30,9 +27,9 @@ router.post('/', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-});
+};
 
-router.put('/:id', async (req, res) => {
+export const actualizarRol = async (req, res) => {
     const { nombre } = req.body;
     try {
         const [result] = await pool.execute('UPDATE rol SET Nombre_Rol = ? WHERE ID_Rol = ?', [nombre, req.params.id]);
@@ -41,9 +38,9 @@ router.put('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-});
+};
 
-router.delete('/:id', async (req, res) => {
+export const eliminarRol = async (req, res) => {
     try {
         const [result] = await pool.execute('DELETE FROM rol WHERE ID_Rol = ?', [req.params.id]);
         if (result.affectedRows === 0) return res.status(404).json({ mensaje: 'Rol no encontrado' });
@@ -51,6 +48,4 @@ router.delete('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-});
-
-export default router;
+};

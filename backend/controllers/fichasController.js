@@ -1,4 +1,4 @@
-import { pool } from '../db.js';
+import { pool } from '../config/db.js';
 
 export const crearFicha = async (req, res) => {
     const { numero_ficha, id_programa, instructor_lider, ambiente, jornada, fecha_inicio, fecha_fin, estado } = req.body;

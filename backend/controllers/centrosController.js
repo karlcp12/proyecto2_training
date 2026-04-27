@@ -1,4 +1,4 @@
-import { pool } from '../db.js';
+import { pool } from '../config/db.js';
 
 export const crearArea = async (req, res) => {
     const { nombre_area, ambiente, id_sede } = req.body;

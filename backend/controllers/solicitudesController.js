@@ -1,4 +1,4 @@
-import { pool } from '../db.js';
+import { pool } from '../config/db.js';
 
 export const crearSolicitud = async (req, res) => {
     const { id_aprendiz, codigo_material, id_ficha, cantidad, fecha, estado } = req.body;

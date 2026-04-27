@@ -5,7 +5,7 @@ import {
     obtenerMaterialPorId,
     actualizarMaterial,
     eliminarMaterial
-} from "../controllers/bodegaController.js";
+} from "../controllers/materialesController.js";
 
 const router = Router();
 

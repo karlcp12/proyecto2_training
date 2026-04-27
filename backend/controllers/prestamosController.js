@@ -1,4 +1,4 @@
-import { pool } from '../db.js';
+import { pool } from '../config/db.js';
 
 export const crearPrestamo = async (req, res) => {
     const { id_solicitud, fecha_prestamo, fecha_devolucion_esperada, fecha_devolucion_real, entregado_por, id_recibido_por, estado } = req.body;

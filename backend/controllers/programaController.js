@@ -1,4 +1,4 @@
-import { pool } from '../db.js';
+import { pool } from '../config/db.js';
 
 export const crearPrograma = async (req, res) => {
     const { codigo, nombre_programa, id_centro, estado } = req.body;

@@ -1,10 +1,10 @@
-import { pool } from '../db.js';
+import { pool } from '../config/db.js';
 
 export const obtenerMaterialesPorArea = async (req, res) => {
     const { id } = req.params;
     const query = `
         SELECT am.id_area_material, am.codigo_material, 
-               m.Nombre_Material as nombre, am.cantidad, m.Tipo_Material as tipo
+            m.Nombre_Material as nombre, am.cantidad, m.Tipo_Material as tipo
         FROM area_materiales am
         JOIN materiales m ON am.codigo_material = m.ID_Material
         WHERE am.id_area = ?
@@ -20,7 +20,7 @@ export const obtenerMaterialesPorArea = async (req, res) => {
 export const asignarMaterialAArea = async (req, res) => {
     const { id } = req.params;
     const { codigo_material, cantidad } = req.body;
-    
+
     try {
         const [existing] = await pool.query(
             'SELECT * FROM area_materiales WHERE id_area = ? AND codigo_material = ?',
