@@ -17,14 +17,16 @@ interface BarChartProps {
   yKey: string;
   colors?: string[];
   horizontal?: boolean;
+  onBarClick?: (data: any) => void;
 }
 
-export const BarChartComponent: React.FC<BarChartProps> = ({
+export const BarChartComponent: React.FC<BarChartProps> = React.memo(({
   data,
   xKey,
   yKey,
   colors = ['#4caf50', '#2196f3', '#ff9800', '#f44336', '#9c27b0'],
   horizontal = false,
+  onBarClick,
 }) => {
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -47,12 +49,17 @@ export const BarChartComponent: React.FC<BarChartProps> = ({
         )}
         <Tooltip />
         <Legend />
-        <Bar dataKey={yKey} fill="#4caf50">
-          {data.map((entry, index) => (
+        <Bar 
+          dataKey={yKey} 
+          fill="#4caf50" 
+          onClick={(data) => onBarClick && onBarClick(data)}
+          style={{ cursor: onBarClick ? 'pointer' : 'default' }}
+        >
+          {data.map((_, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
         </Bar>
       </BarChart>
     </ResponsiveContainer>
   );
-};
+});

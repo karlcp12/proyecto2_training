@@ -1,48 +1,140 @@
-import { pool } from '../config/db.js';
+import { pool } from '../db.js';
 
 export const getDashboardStats = async (req, res) => {
     try {
-        // 1. Totales
-        const [totalMaterials] = await pool.query('SELECT COUNT(*) as count FROM materiales');
-        const [pendingSolicitudes] = await pool.query("SELECT COUNT(*) as count FROM solicitudes WHERE Estado = 'Pendiente'");
-        const [criticalStock] = await pool.query('SELECT COUNT(*) as count FROM materiales WHERE Stock_Total < 5');
-        const [recentMovements] = await pool.query('SELECT COUNT(*) as count FROM movimiento WHERE Fecha >= DATE_SUB(NOW(), INTERVAL 7 DAY)');
-
-        // 2. Gráfica de Barras: Top Materiales (Stock)
-        const [topMaterials] = await pool.query(
-            'SELECT Nombre_Material as name, Stock_Total as quantity FROM materiales ORDER BY Stock_Total DESC LIMIT 5'
-        );
-
-        // 3. Gráfica de Líneas: Historial de Movimientos (Últimos 7 días)
-        const [movementHistory] = await pool.query(`
-            SELECT DATE_FORMAT(Fecha, '%Y-%m-%d') as date, COUNT(*) as count 
-            FROM movimiento 
-            WHERE Fecha >= DATE_SUB(NOW(), INTERVAL 7 DAY) 
-            GROUP BY date 
-            ORDER BY date ASC
+        // 1. Total Materials
+        const [totalMatRows] = await pool.query('SELECT COUNT(*) as total FROM MATERIALES');
+        
+        // 2. Active Requests (Pendiente)
+        const [pendingSolRows] = await pool.query("SELECT COUNT(*) as total FROM SOLICITUDES WHERE ESTADO = 'Pendiente'");
+        
+        // 3. Critical Stock (< 5 units)
+        const [criticalRows] = await pool.query('SELECT COUNT(*) as total FROM MATERIALES WHERE CANTIDAD <= 5');
+        
+        // 4. Distribution by Type
+        const [typeDistRows] = await pool.query('SELECT TIPO as name, SUM(CANTIDAD) as value FROM MATERIALES GROUP BY TIPO');
+        
+        // 5. Status Distribution (Solicitudes)
+        const [statusDistRows] = await pool.query('SELECT ESTADO as name, COUNT(*) as value FROM SOLICITUDES GROUP BY ESTADO');
+        
+        // 6. Movement History (Last 7 days of préstamos)
+        const [movementRows] = await pool.query(`
+            SELECT FECHA_PRESTAMO as date, COUNT(*) as count 
+            FROM PRESTAMOS 
+            WHERE FECHA_PRESTAMO >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            GROUP BY FECHA_PRESTAMO
+            ORDER BY FECHA_PRESTAMO ASC
         `);
 
-        // 4. Gráfica Circular: Distribución de Estados de Solicitudes
-        const [statusDistribution] = await pool.query(
-            'SELECT Estado as name, COUNT(*) as value FROM solicitudes GROUP BY Estado'
-        );
+        // 7. Top Materials (by quantity)
+        const [topMatRows] = await pool.query('SELECT NOMBRE as name, CANTIDAD as quantity FROM MATERIALES ORDER BY CANTIDAD DESC LIMIT 5');
 
         res.status(200).json({
             totals: {
-                materials: totalMaterials[0].count,
-                pendingSolicitudes: pendingSolicitudes[0].count,
-                criticalStock: criticalStock[0].count,
-                recentMovements: recentMovements[0].count
+                materials: totalMatRows[0].total,
+                pendingSolicitudes: pendingSolRows[0].total,
+                criticalStock: criticalRows[0].total,
+                recentMovements: movementRows.reduce((a, b) => a + b.count, 0)
             },
             charts: {
-                topMaterials,
-                movementHistory,
-                statusDistribution
+                typeDistribution: typeDistRows,
+                statusDistribution: statusDistRows,
+                movementHistory: movementRows,
+                topMaterials: topMatRows
             }
         });
-
     } catch (error) {
-        console.error("Error in getDashboardStats:", error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const getReportesData = async (req, res) => {
+    try {
+        // Detailed list of requests for the report table
+        const query = `
+            SELECT s.ID_SOLICITUD as numero, s.FECHA as fecha, a.NOMBRE_AREA as area, 
+                   u.NOMBRE as responsable, s.ESTADO as estado
+            FROM SOLICITUDES s
+            LEFT JOIN FICHAS f ON s.ID_FICHA = f.ID_FICHA
+            LEFT JOIN PROGRAMAS p ON f.ID_PROGRAMA = p.ID_PROGRAMA
+            LEFT JOIN AREA a ON p.ID_CENTRO = a.ID_AREA
+            LEFT JOIN USUARIOS u ON s.ID_USUARIO = u.ID_USUARIO
+        `;
+        const [rows] = await pool.query(query);
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const getAlertas = async (req, res) => {
+    try {
+        const alerts = [];
+        
+        // 1. Low stock alerts
+        const [lowStock] = await pool.query('SELECT NOMBRE, CANTIDAD FROM MATERIALES WHERE CANTIDAD <= 5');
+        lowStock.forEach(m => {
+            alerts.push({
+                id_alerta: `stock-${m.NOMBRE}`,
+                tipo_alerta: 'Stock Bajo',
+                descripcion: `El material ${m.NOMBRE} tiene solo ${m.CANTIDAD} unidades restantes.`,
+                fecha: new Date().toLocaleDateString('es-CO')
+            });
+        });
+
+        // 2. Pending solicitudes alert
+        const [pending] = await pool.query("SELECT COUNT(*) as count FROM SOLICITUDES WHERE ESTADO = 'Pendiente'");
+        if (pending[0].count > 0) {
+            alerts.push({
+                id_alerta: 'pending-requests',
+                tipo_alerta: 'Solicitudes Pendientes',
+                descripcion: `Hay ${pending[0].count} solicitudes esperando aprobación.`,
+                fecha: new Date().toLocaleDateString('es-CO')
+            });
+        }
+
+        res.status(200).json(alerts);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export const getMovimientosReport = async (req, res) => {
+    try {
+        const query = `
+            SELECT m.ID_MOVIMIENTO as id, mat.NOMBRE as material, 
+                   m.TIPO_MOVIMIENTO as tipo, m.CANTIDAD as cantidad, 
+                   m.FECHA as fecha, m.MOTIVO as motivo,
+                   u.NOMBRE as usuario
+            FROM MOVIMIENTOS_MATERIAL m
+            JOIN MATERIALES mat ON m.ID_MATERIAL = mat.CODIGO_MATERIAL
+            LEFT JOIN USUARIOS u ON m.ID_USUARIO = u.ID_USUARIO
+            ORDER BY m.FECHA DESC
+        `;
+        const [rows] = await pool.query(query);
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+export const getMaterialsPDFData = async (req, res) => {
+    const { ids } = req.query; // Expecting comma-separated ids
+    try {
+        let query = `
+            SELECT CODIGO_MATERIAL as codigo, NOMBRE as nombre, 
+                   CANTIDAD as cantidad, TIPO as tipo 
+            FROM MATERIALES
+        `;
+        
+        if (ids && ids !== 'all') {
+            const idList = ids.split(',').map(id => parseInt(id));
+            query += ` WHERE CODIGO_MATERIAL IN (${idList.join(',')})`;
+        }
+
+        const [rows] = await pool.query(query);
+        res.status(200).json(rows);
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };

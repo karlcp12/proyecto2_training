@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './AreasPage.css';
 import '../MaterialesPage/MaterialesPage.css'; // Keep shared form styles
 
-const API_URL = 'http://localhost:3001/centros';
+const API_URL = 'http://localhost:3001/areas';
 
 interface Area {
   id_area?: number;

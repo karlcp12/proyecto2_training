@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../../molecules/Modal/Modal';
-import { FaPlus, FaSearch } from 'react-icons/fa';
+import { SummaryCard } from '../../organisms/Charts/SummaryCard';
+import { BarChartComponent } from '../../organisms/Charts/BarChartComponent';
+import { GaugeChartComponent } from '../../organisms/Charts/GaugeChartComponent';
+import { FaPlus, FaSearch, FaBox, FaExclamationTriangle, FaHistory } from 'react-icons/fa';
+import { useSettings } from '../../../context/SettingsContext';
+import '../../organisms/Charts/Charts.css';
 import './MaterialesPage.css';
 
 const API_URL = 'http://localhost:3001/bodega';
@@ -145,6 +150,21 @@ export const MaterialesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editing, setEditing] = useState<Material | null>(null);
+  const { settings } = useSettings();
+
+  const stats = React.useMemo(() => {
+    const totalMateriales = materiales.length;
+    const materialesCriticos = materiales.filter((m: Material) => Number(m.cantidad) < settings.lowStockThreshold).length;
+    const stockData = materiales.slice(0, 8).map((m: Material) => ({
+      name: m.nombre,
+      stock: Number(m.cantidad)
+    }));
+    const totalStock = materiales.reduce((acc: number, curr: Material) => acc + Number(curr.cantidad), 0);
+    const capacity = 1000;
+    const occupancy = Math.min(Math.round((totalStock / capacity) * 100), 100);
+
+    return { totalMateriales, materialesCriticos, stockData, occupancy };
+  }, [materiales, settings.lowStockThreshold]);
 
   const fetchMateriales = async () => {
     try {
@@ -185,6 +205,46 @@ export const MaterialesPage: React.FC = () => {
 
   return (
     <div className="crud-page-container redesign">
+      {/* Resumen Visual */}
+      <div className="dashboard-grid" style={{ marginBottom: '20px', padding: 0 }}>
+        <SummaryCard 
+          title="Total Materiales" 
+          value={stats.totalMateriales} 
+          icon={<FaBox />} 
+          color="#2196f3" 
+        />
+        <SummaryCard 
+          title="Materiales Críticos" 
+          value={stats.materialesCriticos} 
+          icon={<FaExclamationTriangle />} 
+          color="#f44336" 
+          subtitle={`Stock menor a ${settings.lowStockThreshold}`}
+        />
+        <SummaryCard 
+          title="Últimos Movimientos" 
+          value={12} 
+          icon={<FaHistory />} 
+          color="#4caf50" 
+          subtitle="Hoy"
+        />
+
+        <div className="dashboard-card" style={{ gridColumn: 'span 2' }}>
+          <div className="dashboard-card-title">Stock por Material (Clic para filtrar)</div>
+          <BarChartComponent 
+            data={stats.stockData} 
+            xKey="name" 
+            yKey="stock" 
+            horizontal={true} 
+            onBarClick={(p) => setSearchTerm(p.name)}
+          />
+        </div>
+
+        <div className="dashboard-card">
+          <div className="dashboard-card-title">Ocupación de Inventario</div>
+          <GaugeChartComponent value={stats.occupancy} label="Capacidad Total" />
+        </div>
+      </div>
+
       <div className="crud-header-actions">
         <h2>MATERIALES</h2>
         <div className="crud-header-right">

@@ -28,6 +28,20 @@ const FichaForm: React.FC<{
   onSubmit: (data: Ficha) => void;
 }> = ({ initial, isEditing, onSubmit }) => {
   const [form, setForm] = useState<Ficha>(initial || emptyFicha);
+  const [programas, setProgramas] = useState<{ id_programa: number; nombre_programa: string }[]>([]);
+
+  useEffect(() => {
+    const fetchProgramas = async () => {
+      try {
+        const res = await fetch('http://localhost:3001/programas');
+        const data = await res.json();
+        setProgramas(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error fetching programs:", err);
+      }
+    };
+    fetchProgramas();
+  }, []);
 
   useEffect(() => {
     setForm(initial || emptyFicha);
@@ -50,15 +64,12 @@ const FichaForm: React.FC<{
           <input name="instructor_lider" value={form.instructor_lider} onChange={handleChange} placeholder="Nombre del instructor" required />
         </div>
         <div className="crud-form-group">
-          <label>Programa (Sigla)</label>
+          <label>Programa</label>
           <select name="id_programa" value={form.id_programa} onChange={handleChange} required>
             <option value="">Seleccione...</option>
-            <option value="ADSO">ADSO</option>
-            <option value="TPS">TPS</option>
-            <option value="TGBS">TGBS</option>
-            <option value="TMI">TMI</option>
-            <option value="TPL">TPL</option>
-            <option value="GGE">GGE</option>
+            {programas.map(p => (
+              <option key={p.id_programa} value={p.id_programa}>{p.nombre_programa}</option>
+            ))}
           </select>
         </div>
         <div className="crud-form-group">

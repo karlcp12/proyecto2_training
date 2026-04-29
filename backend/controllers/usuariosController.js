@@ -1,73 +1,30 @@
-import { pool } from '../config/db.js';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = 'mi-clave-super-secreta-123'; // Hardcoded temporal
-
-export const loginUsuario = async (req, res) => {
-    const { usuario, contrasena } = req.body;
-    
-    // Buscar por Correo (campo de login en basena)
-    const query = 'SELECT * FROM usuarios WHERE Correo = ?';
-    console.log("Login intent for:", usuario);
-    try {
-        const [rows] = await pool.execute(query, [usuario]);
-        console.log("Found rows:", rows.length);
-        
-        if (rows.length === 0) {
-            return res.status(401).json({ mensaje: 'Credenciales inválidas' });
-        }
-        
-        const user = rows[0];
-        
-        // Verificar la contraseña (usando bcryptjs)
-        const isMatch = await bcrypt.compare(contrasena, user.Contrasena);
-        
-        if (!isMatch) {
-            return res.status(401).json({ mensaje: 'Credenciales inválidas' });
-        }
-        
-        if (user.Estado !== 'Activo') {
-            return res.status(403).json({ mensaje: 'El usuario se encuentra inactivo' });
-        }
-        
-        // Crear Token
-        const token = jwt.sign(
-            { id: user.ID_Usuario, rol: user.ID_Rol }, 
-            JWT_SECRET, 
-            { expiresIn: '8h' }
-        );
-        
-        res.status(200).json({ 
-            mensaje: 'Autenticación exitosa', 
-            token, 
-            user: {
-                id_usuarios: user.ID_Usuario,
-                nombre: user.Nombre,
-                apellidos: user.Apellidos,
-                email: user.Correo,
-                rol: user.ID_Rol
-            }
-        });
-        
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
+import { pool } from '../db.js';
+import { logAction } from './auditController.js';
 
 export const crearUsuario = async (req, res) => {
-    const { nombre, apellidos, email, telefono, documento, rol, estado } = req.body;
-    const query = 'INSERT INTO usuarios (Nombre, Apellidos, Correo, Estado, ID_Rol) VALUES (?, ?, ?, ?, ?)';
+    const { nombre, apellidos, email, telefono, documento, rol, password, estado } = req.body;
+    // Map role names to IDs based on the database_schema.sql initial data
+    const roleMap = { 'Administrador': 1, 'Instructor': 2, 'Vocero': 3, 'Personal': 4 };
+    const id_rol = roleMap[rol] || 4; // Default to Personal
+    const query = 'INSERT INTO USUARIOS (NOMBRE, APELLIDOS, EMAIL, TELEFONO, DOCUMENTO, ID_ROL, PASSWORD, ESTADO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     try {
-        const [result] = await pool.execute(query, [nombre, apellidos, email, estado || 'Activo', rol]);
-        res.status(201).json({ id_usuarios: result.insertId, ...req.body, mensaje: 'Usuario creado con éxito' });
+        const [result] = await pool.execute(query, [nombre, apellidos, email, telefono, documento, id_rol, password || 'Admin123', estado || 'Activo']);
+        res.status(201).json({ id_usuario: result.insertId, ...req.body, mensaje: 'Usuario creado con éxito' });
+        
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Crear', 'Usuarios', `Nuevo usuario: ${nombre} ${apellidos}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
 export const obtenerUsuarios = async (req, res) => {
-    const query = 'SELECT ID_Usuario as id_usuarios, Nombre as nombre, Apellidos as apellidos, Correo as email, Estado as estado, ID_Rol as rol FROM usuarios';
+    const query = `
+        SELECT u.ID_USUARIO as id_usuario, u.NOMBRE as nombre, u.APELLIDOS as apellidos, 
+               u.DOCUMENTO as documento, u.EMAIL as email, u.TELEFONO as telefono, 
+               r.NOMBRE_ROL as rol, u.ESTADO as estado 
+        FROM USUARIOS u
+        LEFT JOIN ROLES r ON u.ID_ROL = r.ID_ROL`;
     try {
         const [rows] = await pool.query(query);
         res.status(200).json(rows);
@@ -78,7 +35,13 @@ export const obtenerUsuarios = async (req, res) => {
 
 export const obtenerUsuarioPorId = async (req, res) => {
     const { id } = req.params;
-    const query = 'SELECT ID_Usuario as id_usuarios, Nombre as nombre, Apellidos as apellidos, Correo as email, Estado as estado, ID_Rol as rol FROM usuarios WHERE ID_Usuario = ?';
+    const query = `
+        SELECT u.ID_USUARIO as id_usuario, u.NOMBRE as nombre, u.APELLIDOS as apellidos, 
+               u.DOCUMENTO as documento, u.EMAIL as email, u.TELEFONO as telefono, 
+               r.NOMBRE_ROL as rol, u.ESTADO as estado 
+        FROM USUARIOS u
+        LEFT JOIN ROLES r ON u.ID_ROL = r.ID_ROL
+        WHERE u.ID_USUARIO = ?`;
     try {
         const [rows] = await pool.query(query, [id]);
         if (rows.length === 0) {
@@ -92,24 +55,30 @@ export const obtenerUsuarioPorId = async (req, res) => {
 
 export const actualizarUsuario = async (req, res) => {
     const { id } = req.params;
-    const { nombre, apellidos, email, rol, estado } = req.body;
+    const { nombre, apellidos, email, telefono, documento, rol, password, estado } = req.body;
+    const roleMap = { 'Administrador': 1, 'Instructor': 2, 'Vocero': 3, 'Personal': 4 };
+    const id_rol = roleMap[rol] || 4;
     
-    try {
-        // Proteger al administrador
-        const [rows] = await pool.query('SELECT Correo FROM usuarios WHERE ID_Usuario = ?', [id]);
-        if (rows.length > 0 && rows[0].Correo === 'admin') {
-            // Si es el admin, no permitir cambiar el correo ni el estado a inactivo
-            if (email !== 'admin' || estado !== 'Activo') {
-                 return res.status(403).json({ mensaje: 'No se puede cambiar el correo o desactivar al administrador predeterminado' });
-            }
-        }
+    let query = 'UPDATE USUARIOS SET NOMBRE = ?, APELLIDOS = ?, EMAIL = ?, TELEFONO = ?, DOCUMENTO = ?, ID_ROL = ?, ESTADO = ?';
+    const params = [nombre, apellidos, email, telefono, documento, id_rol, estado];
+    
+    if (password) {
+        query += ', PASSWORD = ?';
+        params.push(password);
+    }
+    
+    query += ' WHERE ID_USUARIO = ?';
+    params.push(id);
 
-        const query = 'UPDATE usuarios SET Nombre = ?, Apellidos = ?, Correo = ?, ID_Rol = ?, Estado = ? WHERE ID_Usuario = ?';
-        const [result] = await pool.execute(query, [nombre, apellidos, email, rol, estado, id]);
+    try {
+        const [result] = await pool.execute(query, params);
         if (result.affectedRows === 0) {
             return res.status(404).json({ mensaje: 'Usuario no encontrado' });
         }
-        res.status(200).json({ id_usuarios: id, ...req.body, mensaje: 'Usuario actualizado con éxito' });
+        res.status(200).json({ id_usuario: id, ...req.body, mensaje: 'Usuario actualizado con éxito' });
+
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Editar', 'Usuarios', `Usuario ID: ${id} - ${nombre} ${apellidos}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -117,20 +86,16 @@ export const actualizarUsuario = async (req, res) => {
 
 export const eliminarUsuario = async (req, res) => {
     const { id } = req.params;
-    
+    const query = 'DELETE FROM USUARIOS WHERE ID_USUARIO = ?';
     try {
-        // Proteger al administrador predeterminado
-        const [rows] = await pool.query('SELECT Correo FROM usuarios WHERE ID_Usuario = ?', [id]);
-        if (rows.length > 0 && rows[0].Correo === 'admin') {
-            return res.status(403).json({ mensaje: 'No se puede eliminar el usuario administrador predeterminado' });
-        }
-
-        const query = 'DELETE FROM usuarios WHERE ID_Usuario = ?';
         const [result] = await pool.execute(query, [id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ mensaje: 'Usuario no encontrado' });
         }
-        res.status(200).json({ mensaje: 'Usuario eliminado con éxito', id_usuarios: id });
+        res.status(200).json({ mensaje: 'Usuario eliminado con éxito', id_usuario: id });
+
+        const user = req.query.user || req.headers['x-user-action'] || 'Desconocido';
+        await logAction(user, 'Eliminar', 'Usuarios', `Usuario ID: ${id}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

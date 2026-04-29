@@ -1,0 +1,43 @@
+/* Dashboard specific styles */
+.dashboard-container {
+  padding: 2rem;
+  overflow-y: auto;
+  height: calc(100vh - 60px); /* Adjust based on navbar height */
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  border: var(--border-premium);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.recent-activity {
+  margin-top: 2rem;
+  background: white;
+  border-radius: var(--radius-lg);
+  border: var(--border-premium);
+  padding: 1.5rem;
+}

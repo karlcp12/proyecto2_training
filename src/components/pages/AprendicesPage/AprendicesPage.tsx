@@ -15,6 +15,7 @@ interface Aprendiz {
   direccion: string;
   telefono: string;
   id_ficha: number | string;
+  numero_ficha?: string;
 }
 
 interface Ficha {
@@ -204,7 +205,7 @@ export const AprendicesPage: React.FC = () => {
                   <td>{a.nombre} {a.apellido}</td>
                   <td>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <FaGraduationCap style={{ color: '#4f46e5' }} /> #{a.id_ficha}
+                      <FaGraduationCap style={{ color: '#4f46e5' }} /> #{a.numero_ficha || a.id_ficha}
                     </span>
                   </td>
                   <td>{a.correo}</td>

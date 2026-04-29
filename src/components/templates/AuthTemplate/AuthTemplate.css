@@ -1,47 +1,25 @@
 .auth-template {
-  height: 98vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background-image: url("/sena.jpg");
-  background-size: cover;
-  background-position: center;
-
-}
-.auth-container{
-  height: 98vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background-image: url("/sena.jpg");
-  background-size: cover;
-  background-position: center;
-
-}
-
-.whatsapp-assistant-btn {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background-color: #25D366;
-  color: white;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  z-index: 1;
 }
 
-.whatsapp-assistant-btn:hover {
+.auth-background {
+  position: absolute;
+  inset: -20px;
+  background: url("/sena.jpg") center/cover no-repeat;
+  filter: blur(15px) brightness(0.8);
+  z-index: -1;
   transform: scale(1.1);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+.auth-template > *:not(.auth-background) {
+  position: relative;
+  z-index: 2;
 }

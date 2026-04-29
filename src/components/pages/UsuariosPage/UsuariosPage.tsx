@@ -7,16 +7,13 @@ import './UsuariosPage.css';
 
 const API_URL = 'http://localhost:3001/usuarios';
 
-
 interface UsuarioConId extends UsuarioData {
-  id_usuarios?: number;
+  id_usuario?: number;
 }
 
 export const UsuariosPage: React.FC = () => {
   const [usuarios, setUsuarios] = useState<UsuarioConId[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUsuario, setEditingUsuario] = useState<UsuarioConId | null>(null);
 
@@ -34,7 +31,6 @@ export const UsuariosPage: React.FC = () => {
     fetchUsuarios();
   }, []);
 
-
   const handleOpenAdd = () => {
     setEditingUsuario(null);
     setIsModalOpen(true);
@@ -48,7 +44,7 @@ export const UsuariosPage: React.FC = () => {
   const handleDelete = async (usuario: UsuarioConId) => {
     if (window.confirm("¿Está seguro que desea eliminar este usuario?")) {
       try {
-        await fetch(`${API_URL}/${usuario.id_usuarios}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/${usuario.id_usuario}`, { method: 'DELETE' });
         await fetchUsuarios();
       } catch (err) {
         console.error('Error al eliminar usuario:', err);
@@ -58,15 +54,13 @@ export const UsuariosPage: React.FC = () => {
 
   const handleSubmitForm = async (data: UsuarioData) => {
     try {
-      if (editingUsuario?.id_usuarios) {
-
-        await fetch(`${API_URL}/${editingUsuario.id_usuarios}`, {
+      if (editingUsuario?.id_usuario) {
+        await fetch(`${API_URL}/${editingUsuario.id_usuario}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
       } else {
-
         await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -121,7 +115,7 @@ export const UsuariosPage: React.FC = () => {
           </thead>
           <tbody>
             {filteredUsuarios.map((usuario) => (
-              <tr key={usuario.id_usuarios}>
+              <tr key={usuario.id_usuario}>
                 <td className="bold-text">{usuario.nombre}</td>
                 <td>{usuario.rol}</td>
                 <td>{usuario.telefono}</td>
@@ -144,7 +138,7 @@ export const UsuariosPage: React.FC = () => {
         </table>
       </div>
 
-      {/* Modal Integration */}
+      {/* Integración del Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <UsuarioForm
           isEditing={editingUsuario !== null}
@@ -152,7 +146,6 @@ export const UsuariosPage: React.FC = () => {
           onSubmit={handleSubmitForm}
         />
       </Modal>
-
     </div>
   );
 };

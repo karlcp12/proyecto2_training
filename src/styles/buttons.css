@@ -1,0 +1,76 @@
+button {
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: inherit;
+}
+
+/* Unified Pill Button Styles (Apex Style) */
+.btn-pill {
+  border-radius: 50px !important;
+  padding: 10px 22px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  font-size: 0.8rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: none !important;
+  cursor: pointer !important;
+}
+
+.btn-pill-edit {
+  background-color: var(--color-secondary-light) !important;
+  color: var(--color-secondary) !important;
+}
+
+.btn-pill-edit:hover {
+  background-color: var(--color-secondary) !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2) !important;
+}
+
+.btn-pill-delete {
+  background-color: var(--color-danger-light) !important;
+  color: var(--color-danger) !important;
+}
+
+.btn-pill-delete:hover {
+  background-color: var(--color-danger) !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.2) !important;
+}
+
+.btn-pill-add,
+.btn-pill-submit {
+  background-color: var(--color-primary-light) !important;
+  color: var(--color-primary) !important;
+}
+
+.btn-pill-add:hover,
+.btn-pill-submit:hover {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(57, 169, 0, 0.2) !important;
+}
+
+.btn-pill-back {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+}
+
+.btn-pill-back:hover {
+  background-color: #e2e8f0 !important;
+  transform: translateX(-3px) !important;
+}

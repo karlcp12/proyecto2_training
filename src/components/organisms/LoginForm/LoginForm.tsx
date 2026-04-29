@@ -1,88 +1,144 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import { Logo } from "../../atoms/Logo/Logo";
-import { Label } from "../../atoms/Label/Label";
 import { Input } from "../../atoms/Input/Input";
 import { Button } from "../../atoms/Button/Button";
 import { Link } from "../../atoms/Link/Link";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./LoginForm.css";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [usuario, setUsuario] = useState("");
-  const [contrasena, setContrasena] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
-    setError("");
+  // Load saved user if exists
+  useEffect(() => {
+    const savedUser = localStorage.getItem('remembered_user');
+    if (savedUser) {
+      setUser(savedUser);
+      setRememberMe(true);
+    }
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
     try {
-      const response = await fetch("http://localhost:3000/usuarios/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usuario, contrasena }),
-      });
+        const response = await fetch('http://localhost:3001/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: user, password: password })
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
-        navigate("/app");
-      } else {
-        setError(data.mensaje || "Error al iniciar sesión");
-      }
+        if (response.ok) {
+            // Remember me logic
+            if (rememberMe) {
+                localStorage.setItem('remembered_user', user);
+            } else {
+                localStorage.removeItem('remembered_user');
+            }
+
+            // Store user info in localStorage for basic "session"
+            localStorage.setItem('user', JSON.stringify(data.usuario));
+            
+            toast.success(`¡Bienvenido de nuevo, ${data.usuario.nombre}!`, {
+                icon: '👋',
+                duration: 4000
+            });
+
+            navigate('/app');
+        } else {
+            setError(data.mensaje || 'Error al iniciar sesión');
+        }
     } catch (err) {
-      setError("Error de red, intenta nuevamente.");
+        setError('No se pudo conectar con el servidor');
     }
   };
 
   return (
-    <div className="login-card">
+    <div className="login-container-wrapper">
+      <div className="login-card-new">
+        {/* Left Side: Branding */}
+        <div className="login-left-image">
+          {/* Background image will be handled in CSS */}
+          <div className="logo-overlay">
+            <Logo width={220} />
+          </div>
+        </div>
 
-      <div className="logo-container">
-        <Logo width={170} />
-      </div>
+        {/* Right Side: Form */}
+        <div className="login-right">
+          <div className="form-inner-card">
+            <div className="form-header-alt">
+              <img src="/LogoLogitmat_sin_fondo.png" alt="Logimat Logo" className="form-brand-logo" />
+              <p className="main-message">Accede al sistema de gestión de inventario <strong>LOGIMAT</strong> con tus credenciales asignadas</p>
+            </div>
 
-      <div className="field">
-        <Label text="Usuario" />
-        <Input 
-          placeholder="Ingrese su usuario" 
-          value={usuario} 
-          onChange={(e) => setUsuario(e.target.value)} 
-        />
-      </div>
+            <form onSubmit={handleLogin} className="login-form-fields-new">
+              <div className="input-group">
+                <div className="input-with-icon">
+                  <Input 
+                    placeholder="Usuario o correo" 
+                    value={user} 
+                    onChange={(e) => setUser(e.target.value)} 
+                    className="input-field-alt"
+                  />
+                </div>
+              </div>
 
-      <div className="field">
-        <Label text="Contraseña" />
-        <div className="password-wrapper">
-          <Input 
-            type={showPassword ? "text" : "password"} 
-            placeholder="Ingrese su contraseña" 
-            value={contrasena}
-            onChange={(e) => setContrasena(e.target.value)}
-          />
-          <button 
-            type="button" 
-            className="password-toggle" 
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M2 13C2 13 5 8 12 8C19 8 22 13 22 13" />
-              <circle cx="12" cy="13" r="3" fill="currentColor" />
-              {showPassword && <line x1="3" y1="3" x2="21" y2="21" stroke="#ff0000" strokeWidth="2" />}
-            </svg>
-          </button>
+              <div className="input-group">
+                <div className="input-with-icon">
+                  <Input 
+                    type={showPassword ? "text" : "password"} 
+                    placeholder="Contraseña" 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    className="input-field-alt"
+                  />
+                  <button 
+                    type="button" 
+                    className="password-toggle-btn" 
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </div>
+
+              {error && <p className="error-message-new">{error}</p>}
+
+              <div className="form-options">
+                <div className="remember-me">
+                  <input 
+                    type="checkbox" 
+                    id="remember" 
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
+                  <label htmlFor="remember">Recordarme</label>
+                </div>
+                <Link text="¿Olvidó su contraseña?" href="/recover-password" className="forgot-link-alt" />
+              </div>
+
+              <div className="form-actions-alt">
+                <Button 
+                  text="INGRESAR" 
+                  type="submit"
+                  className="btn-login-alt"
+                />
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-
-      <div className="forgot">
-        <Link text="¿Olvidó su contraseña?" href="/recover-password" />
-      </div>
-
-      {error && <div style={{ color: "red", fontSize: "14px", marginTop: "10px", textAlign: "center" }}>{error}</div>}
-
-      <Button text="Ingresar" onClick={handleLogin} />
-
     </div>
   );
 };

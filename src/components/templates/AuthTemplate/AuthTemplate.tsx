@@ -1,10 +1,15 @@
-import { LoginForm } from "../../organisms/LoginForm/LoginForm";
+import React from "react";
 import "./AuthTemplate.css";
 
-export const AuthTemplate = () => {
+interface AuthTemplateProps {
+  children: React.ReactNode;
+}
+
+export const AuthTemplate: React.FC<AuthTemplateProps> = ({ children }) => {
   return (
     <div className="auth-template">
-      <LoginForm />
+      <div className="auth-background"></div>
+      {children}
     </div>
   );
 };

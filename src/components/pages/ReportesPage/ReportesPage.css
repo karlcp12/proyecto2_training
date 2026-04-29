@@ -1,314 +1,206 @@
 .reportes-page-container {
-  background-color: #ffffff;
-  border: var(--border-premium);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
+    padding: 30px;
+    background-color: #f8fafc;
+    min-height: calc(100vh - 80px);
 }
 
-/* ─── HEADER ─────────────────────────────── */
 .reportes-header-inicio {
-  margin-bottom: 32px;
+    text-align: center;
+    margin-bottom: 50px;
 }
 
 .reportes-header-inicio h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+    font-size: 2.5rem;
+    color: #1a5f1d;
+    font-weight: 800;
+    letter-spacing: 2px;
 }
 
-.reportes-header-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.reportes-header-actions h2 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-.reportes-titulo-con-back {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.btn-back {
-  background: #f0f0f0;
-  border: none;
-  border-radius: 8px;
-  width: 34px;
-  height: 34px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #444;
-  transition: background 0.2s;
-  flex-shrink: 0;
-}
-
-.btn-back:hover {
-  background: #ddd;
-}
-
-/* ─── ACCIONES DERECHA ───────────────────── */
-.reportes-actions-right {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-  flex: 1;
-  justify-content: flex-end;
-}
-
-/* ─── SEARCH BAR ─────────────────────────── */
-.reportes-search-bar {
-  display: flex;
-  align-items: center;
-  background-color: #f9f9fc;
-  border-radius: 20px;
-  padding: 8px 16px;
-  width: 100%;
-  max-width: 300px;
-}
-
-.reportes-search-icon {
-  font-style: normal;
-  color: #a0a0a0;
-  margin-right: 8px;
-  font-size: 0.9rem;
-}
-
-.reportes-search-input {
-  border: none;
-  background: transparent;
-  outline: none;
-  width: 100%;
-  font-size: 0.9rem;
-  color: #4a4a4a;
-}
-
-.reportes-search-input::placeholder {
-  color: #a0a0a0;
-}
-
-/* ─── BOTÓN IMPRIMIR ─────────────────────── */
-.btn-print-report {
-  background-color: #2e9f1a;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 16px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  white-space: nowrap;
-}
-
-.btn-print-report:hover {
-  background-color: #248015;
-}
-
-/* ─── TABLA REPORTES ─────────────────────── */
-.reportes-table-wrapper {
-  overflow-x: auto;
-  flex: 1;
-  background: white;
-  border: 1px solid #eaeaea;
-  border-radius: 8px;
-}
-
-.reportes-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.reportes-table th {
-  color: #8c8c8c;
-  font-weight: 600;
-  font-size: 0.85rem;
-  padding: 16px;
-  border-bottom: 1px solid #eaeaea;
-  background-color: #f9f9fc;
-  text-transform: capitalize;
-}
-
-.reportes-table td {
-  padding: 16px;
-  font-size: 0.9rem;
-  color: #4a4a4a;
-  vertical-align: middle;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.reportes-table tbody tr:hover {
-  background-color: #f9f9fc;
-}
-
-.bold-text {
-  font-weight: 600;
-  color: #1a1a1a;
-}
-
-/* ─── ICONOS ACCIÓN ──────────────────────── */
-.icon-button {
-  background: none;
-  border: none;
-  font-size: 1.25rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-  padding: 4px;
-  border-radius: 6px;
-}
-
-.icon-button:hover {
-  transform: scale(1.2);
-  opacity: 0.8;
-}
-
-.icon-check {
-  color: #38b000;
-}
-
-.icon-cross {
-  color: #ee6055;
-}
-
-.icon-info {
-  color: #48cae4;
-}
-
-/* ─── CARDS INICIO ───────────────────────── */
 .reportes-inicio-cards {
-  display: flex;
-  gap: 32px;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  flex-wrap: wrap;
-  padding: 32px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .reporte-card-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  background: #f5faf5;
-  border: 2px solid #c8e6c9;
-  border-radius: 16px;
-  width: 180px;
-  height: 180px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 20px;
+    background: white;
+    border: none;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
 }
 
 .reporte-card-btn:hover {
-  background: #e8f5e9;
-  border-color: #4caf50;
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(76, 175, 80, 0.2);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(46, 159, 26, 0.15);
 }
 
 .reporte-card-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
 }
+
+.valuo-icon { background: #e8f5e9; color: #2e7d32; }
+.compras-icon { background: #e3f2fd; color: #1976d2; }
+.history-icon { background: #fff3e0; color: #ef6c00; }
+.stats-icon { background: #f3e5f5; color: #7b1fa2; }
 
 .reporte-card-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #2e7d32;
-  text-align: center;
-  line-height: 1.4;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    line-height: 1.4;
+    text-align: center;
 }
 
-/* ─── VISTA DETALLE ──────────────────────── */
-.detalle-seccion {
-  margin-bottom: 28px;
+/* Tables */
+.reportes-table-wrapper {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
 
-.detalle-seccion-titulo {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #1a1a1a;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0 0 12px 0;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #e8f5e9;
+.reportes-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.detalle-tabla {
-  width: 100%;
-  border-collapse: collapse;
-  background: #f9f9fc;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #eaeaea;
+.reportes-table th {
+    background: #f1f5f9;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #64748b;
+    border-bottom: 2px solid #e2e8f0;
 }
 
-.detalle-campo {
-  padding: 12px 16px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #8c8c8c;
-  width: 40%;
-  border-bottom: 1px solid #eaeaea;
-  background-color: #f9f9fc;
+.reportes-table td {
+    padding: 15px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
 }
 
-.detalle-valor {
-  padding: 12px 16px;
-  font-size: 0.9rem;
-  color: #1a1a1a;
-  border-bottom: 1px solid #eaeaea;
-  background: white;
+/* Badges */
+.badge-tipo {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-.badge-estado-reporte {
-  display: inline-block;
-  padding: 3px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
+.badge-tipo.entrada { background: #dcfce7; color: #166534; }
+.badge-tipo.salida { background: #fee2e2; color: #991b1b; }
+
+.stock-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+}
+.stock-badge.low { background: #fee2e2; color: #dc2626; }
+.stock-badge.ok { background: #dcfce7; color: #16a34a; }
+
+/* Buttons */
+.btn-back {
+    background: #e2e8f0;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-right: 15px;
 }
 
-.badge-estado-reporte.en-uso {
-  background-color: #fff3e0;
-  color: #e65100;
+.reportes-titulo-con-back {
+    display: flex;
+    align-items: center;
 }
 
-.badge-estado-reporte.disponible {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+.reportes-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.reportes-search-bar {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+}
+
+.reportes-search-input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 0.95rem;
+}
+
+.btn-print-report {
+    background: #2e9f1a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-print-report:hover {
+    background: #258115;
+}
+
+.btn-export-excel {
+    background: #1d6f42;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+.icon-button:hover {
+    background: #f1f5f9;
+}
+
+.pdf-btn {
+    color: #dc2626;
+    font-size: 1.5rem;
+}
+
+.bold-text {
+    font-weight: 700;
 }

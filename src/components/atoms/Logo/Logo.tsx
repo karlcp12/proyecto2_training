@@ -2,14 +2,16 @@ import "./Logo.css";
 
 interface LogoProps {
   width?: number;
+  src?: string;
+  className?: string;
 }
 
-export const Logo = ({ width = 120 }: LogoProps) => {
+export const Logo = ({ width = 120, src = "/logo-sena-blanco.png", className = "logo" }: LogoProps) => {
   return (
     <img
-      className="logo"
-      src="/logimat.jpeg"
-      alt="Logimat Logo"
+      className={className}
+      src={src}
+      alt="App Logo"
       style={{ width: `${width}px` }}
     />
   );

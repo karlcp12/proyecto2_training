@@ -8,11 +8,12 @@ import {
   FaGraduationCap,
   FaUser,
   FaChartLine,
-  FaBell,
   FaWarehouse,
   FaFileAlt,
   FaUserCheck,
   FaBars,
+  FaHistory,
+  FaCog,
 } from "react-icons/fa";
 import "./Sidebar.css";
 
@@ -21,7 +22,13 @@ export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
 
+  // Obtener rol del usuario
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = user.rol === 'Administrador';
+
   const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     navigate("/");
   };
 
@@ -90,6 +97,18 @@ export const Sidebar = () => {
         <NavLink to="/app/verificacion" className="nav-item flat-link">
           <FaUserCheck className="nav-icon" /> <span className="nav-text">VERIFICACION DE MATERIALES</span>
         </NavLink>
+
+        {/* Módulos de Jhan_Dasbort */}
+        {isAdmin && (
+          <>
+            <NavLink to="/app/auditoria" className="nav-item flat-link">
+              <FaHistory className="nav-icon" /> <span className="nav-text">AUDITORÍA</span>
+            </NavLink>
+            <NavLink to="/app/configuracion" className="nav-item flat-link">
+              <FaCog className="nav-icon" /> <span className="nav-text">CONFIGURACIÓN</span>
+            </NavLink>
+          </>
+        )}
       </nav>
 
       <div className="sidebar-footer">
